@@ -68,47 +68,30 @@ document.querySelectorAll(".copy-btn").forEach((button) => {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-const openingStage = document.getElementById("opening-stage");
-const openingImage = openingStage ? openingStage.querySelector("img") : null;
-const heroPhoto = document.querySelector(".hero-photo");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const revealSections = document.querySelectorAll(".reveal");
 
-if (openingStage && openingImage && heroPhoto && !reducedMotion) {
-  let collapsed = false;
-  const initialScrollY = window.scrollY;
+if (revealSections.length > 0) {
+  if (reducedMotion) {
+    revealSections.forEach((section) => section.classList.add("is-visible"));
+  } else {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        root: null,
+        threshold: 0.18,
+        rootMargin: "0px 0px -8% 0px",
+      }
+    );
 
-  function collapseOpeningPhoto() {
-    if (collapsed) return;
-    collapsed = true;
-
-    const startRect = openingImage.getBoundingClientRect();
-    const endRect = heroPhoto.getBoundingClientRect();
-    const startCenterX = startRect.left + startRect.width / 2;
-    const startCenterY = startRect.top + startRect.height / 2;
-    const endCenterX = endRect.left + endRect.width / 2;
-    const endCenterY = endRect.top + endRect.height / 2;
-    const moveX = endCenterX - startCenterX;
-    const moveY = endCenterY - startCenterY;
-    const scale = Math.min(endRect.width / startRect.width, endRect.height / startRect.height);
-
-    openingImage.style.transform = `translate(${moveX}px, ${moveY}px) scale(${scale})`;
-    openingImage.style.opacity = "0";
-    openingStage.classList.add("done");
-
-    setTimeout(() => {
-      openingStage.style.display = "none";
-    }, 500);
+    revealSections.forEach((section) => observer.observe(section));
   }
-
-  function onScrollOrResize() {
-    if (window.scrollY - initialScrollY > 10) collapseOpeningPhoto();
-  }
-
-  window.addEventListener("scroll", onScrollOrResize, { passive: true });
-  window.addEventListener("wheel", collapseOpeningPhoto, { passive: true, once: true });
-  window.addEventListener("touchmove", collapseOpeningPhoto, { passive: true, once: true });
-} else if (openingStage) {
-  openingStage.style.display = "none";
 }
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
