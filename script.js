@@ -74,6 +74,21 @@ const revealSections = document.querySelectorAll(".reveal");
 if (revealSections.length > 0) {
   if (reducedMotion) {
     revealSections.forEach((section) => section.classList.add("is-visible"));
+  } else if (!("IntersectionObserver" in window)) {
+    const revealByScroll = () => {
+      revealSections.forEach((section) => {
+        if (section.classList.contains("is-visible")) return;
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.86) {
+          section.classList.add("is-visible");
+        }
+      });
+    };
+
+    revealByScroll();
+    window.addEventListener("scroll", revealByScroll, { passive: true });
+    window.addEventListener("touchmove", revealByScroll, { passive: true });
+    window.addEventListener("resize", revealByScroll);
   } else {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -91,6 +106,18 @@ if (revealSections.length > 0) {
     );
 
     revealSections.forEach((section) => observer.observe(section));
+
+    // Mobile browsers may delay observer callbacks on drag; do one immediate check.
+    requestAnimationFrame(() => {
+      revealSections.forEach((section) => {
+        if (section.classList.contains("is-visible")) return;
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.9) {
+          section.classList.add("is-visible");
+          observer.unobserve(section);
+        }
+      });
+    });
   }
 }
 
