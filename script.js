@@ -77,6 +77,7 @@ if (petalCanvas && !prefersReducedMotion) {
   const PETAL_COUNT = 28;
   const petalImage = new Image();
   let petalImageLoaded = false;
+  const isMobileViewport = window.matchMedia("(max-width: 768px)").matches;
   const PETAL_COLORS = [
     [255, 255, 255], // white
     [248, 242, 255], // very light lavender
@@ -119,7 +120,7 @@ if (petalCanvas && !prefersReducedMotion) {
       angle: randomRange(0, Math.PI * 2),
       rotation: randomRange(0, Math.PI * 2),
       rotationSpeed: randomRange(-0.012, 0.012),
-      opacity: randomRange(0.55, 0.9),
+      opacity: isMobileViewport ? randomRange(0.85, 1) : randomRange(0.72, 0.96),
       color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
     };
   }
@@ -142,7 +143,13 @@ if (petalCanvas && !prefersReducedMotion) {
       }
 
       ctx.globalAlpha = petal.opacity;
+      ctx.filter = isMobileViewport
+        ? "brightness(1.15) contrast(1.12) saturate(1.15)"
+        : "brightness(1.08) contrast(1.05) saturate(1.08)";
+      ctx.shadowColor = "rgba(146, 110, 194, 0.36)";
+      ctx.shadowBlur = isMobileViewport ? 8 : 5;
       ctx.drawImage(petalImage, -width / 2, -height / 2, width, height);
+      ctx.filter = "none";
     } else {
       const [r, g, b] = petal.color;
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${petal.opacity})`;
