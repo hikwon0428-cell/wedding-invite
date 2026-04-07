@@ -75,6 +75,8 @@ if (petalCanvas && !prefersReducedMotion) {
   const ctx = petalCanvas.getContext("2d");
   const petals = [];
   const PETAL_COUNT = 28;
+  const petalImage = new Image();
+  let petalImageLoaded = false;
   const PETAL_COLORS = [
     [255, 255, 255], // white
     [248, 242, 255], // very light lavender
@@ -87,6 +89,14 @@ if (petalCanvas && !prefersReducedMotion) {
   function randomRange(min, max) {
     return Math.random() * (max - min) + min;
   }
+
+  petalImage.src = "./images/KakaoTalk_20260407_153823551-removebg-preview.png";
+  petalImage.onload = () => {
+    petalImageLoaded = true;
+  };
+  petalImage.onerror = () => {
+    petalImageLoaded = false;
+  };
 
   function resizeCanvas() {
     width = window.innerWidth;
@@ -101,7 +111,7 @@ if (petalCanvas && !prefersReducedMotion) {
     return {
       x: randomRange(0, width),
       y: initial ? randomRange(0, height) : randomRange(-80, -20),
-      size: randomRange(8, 15),
+      size: randomRange(14, 24),
       speedY: randomRange(0.45, 1.1),
       speedX: randomRange(-0.3, 0.3),
       swing: randomRange(0.4, 1.4),
@@ -118,34 +128,51 @@ if (petalCanvas && !prefersReducedMotion) {
     ctx.save();
     ctx.translate(petal.x, petal.y);
     ctx.rotate(petal.rotation);
-    const [r, g, b] = petal.color;
-    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${petal.opacity})`;
-    ctx.strokeStyle = "rgba(188, 166, 220, 0.35)";
-    ctx.lineWidth = 1;
-    ctx.shadowColor = "rgba(203, 182, 235, 0.28)";
-    ctx.shadowBlur = 4;
-    ctx.beginPath();
-    // Draw a pointed petal shape instead of a simple oval.
-    ctx.moveTo(0, -petal.size);
-    ctx.bezierCurveTo(
-      petal.size * 0.85,
-      -petal.size * 0.5,
-      petal.size * 0.7,
-      petal.size * 0.75,
-      0,
-      petal.size
-    );
-    ctx.bezierCurveTo(
-      -petal.size * 0.7,
-      petal.size * 0.75,
-      -petal.size * 0.85,
-      -petal.size * 0.5,
-      0,
-      -petal.size
-    );
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    if (petalImageLoaded) {
+      const aspect = petalImage.naturalWidth / petalImage.naturalHeight;
+      const base = petal.size * 2.4;
+      let width = base;
+      let height = base;
+
+      // Keep original image ratio to avoid vertical/horizontal squashing.
+      if (aspect >= 1) {
+        height = base / aspect;
+      } else {
+        width = base * aspect;
+      }
+
+      ctx.globalAlpha = petal.opacity;
+      ctx.drawImage(petalImage, -width / 2, -height / 2, width, height);
+    } else {
+      const [r, g, b] = petal.color;
+      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${petal.opacity})`;
+      ctx.strokeStyle = "rgba(188, 166, 220, 0.35)";
+      ctx.lineWidth = 1;
+      ctx.shadowColor = "rgba(203, 182, 235, 0.28)";
+      ctx.shadowBlur = 4;
+      ctx.beginPath();
+      // Fallback vector petal when image is unavailable.
+      ctx.moveTo(0, -petal.size);
+      ctx.bezierCurveTo(
+        petal.size * 0.85,
+        -petal.size * 0.5,
+        petal.size * 0.7,
+        petal.size * 0.75,
+        0,
+        petal.size
+      );
+      ctx.bezierCurveTo(
+        -petal.size * 0.7,
+        petal.size * 0.75,
+        -petal.size * 0.85,
+        -petal.size * 0.5,
+        0,
+        -petal.size
+      );
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
