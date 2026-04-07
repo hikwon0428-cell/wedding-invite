@@ -43,7 +43,7 @@ body {
   border-right: 1px solid var(--line);
   position: relative;
   z-index: 2;
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.43);
   backdrop-filter: blur(1px);
 }
 
