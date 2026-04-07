@@ -75,6 +75,7 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matc
 
 if (openingStage && openingImage && heroPhoto && !reducedMotion) {
   let collapsed = false;
+  const initialScrollY = window.scrollY;
 
   function collapseOpeningPhoto() {
     if (collapsed) return;
@@ -100,10 +101,9 @@ if (openingStage && openingImage && heroPhoto && !reducedMotion) {
   }
 
   function onScrollOrResize() {
-    if (window.scrollY > 10) collapseOpeningPhoto();
+    if (window.scrollY - initialScrollY > 10) collapseOpeningPhoto();
   }
 
-  if (window.scrollY > 10) collapseOpeningPhoto();
   window.addEventListener("scroll", onScrollOrResize, { passive: true });
   window.addEventListener("wheel", collapseOpeningPhoto, { passive: true, once: true });
   window.addEventListener("touchmove", collapseOpeningPhoto, { passive: true, once: true });
