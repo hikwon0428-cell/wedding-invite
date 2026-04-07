@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>모바일 청첩장 | 첫 버전</title>
+    <meta
+      name="description"
+      content="모던한 흑백 스타일의 모바일 청첩장 템플릿"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="petal-canvas" aria-hidden="true"></canvas>
+    <main class="invite">
+      <section class="hero section">
+        <p class="eyebrow">WEDDING INVITATION</p>
+        <div class="hero-photo">
+          <img src="C:\Users\hsd09\OneDrive\문서\카카오톡 받은 파일\KakaoTalk_20260407_153823551.jpg" alt="신랑 신부 대표 사진" />
+        </div>
+        <h1 class="names">JINWOO &amp;<br />HYEIN</h1>
+        <p class="date">2026. 08. 22 SAT 13:00 PM</p>
+        <p class="location">더헤윰 웨딩홀</p>
+      </section>
+
+      <section class="section message">
+        <h2>초대합니다</h2>
+        <p>
+          어서옵쇼<br />
+          밥묵고가쇼잉<br />
+          머라쓸지 고민하기
+        </p>
+      </section>
+
+      <section class="section countdown-wrap">
+        <h2>예식까지</h2>
+        <div class="countdown" id="countdown">
+          <div><span id="days">0</span><small>DAYS</small></div>
+          <div><span id="hours">0</span><small>HOURS</small></div>
+          <div><span id="minutes">0</span><small>MIN</small></div>
+          <div><span id="seconds">0</span><small>SEC</small></div>
+        </div>
+      </section>
+
+      <section class="section info">
+        <h2>예식 안내</h2>
+        <ul>
+          <li><strong>일시</strong><span>2026년 08월 22일 토요일 오후 1시</span></li>
+          <li><strong>장소</strong><span>더헤윰 웨딩홀</span></li>
+          <li><strong>주소</strong><span>전라남도 순천시 순천만길 71</span></li>
+        </ul>
+      </section>
+
+      <section class="section gallery">
+        <h2>Gallery</h2>
+        <div class="grid">
+          <div class="photo-placeholder">PHOTO 01</div>
+          <div class="photo-placeholder">PHOTO 02</div>
+          <div class="photo-placeholder">PHOTO 03</div>
+          <div class="photo-placeholder">PHOTO 04</div>
+        </div>
+      </section>
+
+      <section class="section account">
+        <h2>마음 전하실 곳</h2>
+        <div class="account-card">
+          <p>신랑 전진우</p>
+          <button class="copy-btn" data-copy="국민은행 111111-11-111111">
+            국민은행 111111-11-111111 복사
+          </button>
+        </div>
+        <div class="account-card">
+          <p>신부 권혜인</p>
+          <button class="copy-btn" data-copy="신한은행 222-222-222222">
+            신한은행 222-222-222222 복사
+          </button>
+        </div>
+      </section>
+
+      <section class="section map">
+        <h2>오시는 길</h2>
+        <div class="map-links">
+          <a href="https://map.kakao.com" target="_blank" rel="noreferrer">카카오맵</a>
+          <a href="https://map.naver.com" target="_blank" rel="noreferrer">네이버지도</a>
+          <a href="https://maps.google.com" target="_blank" rel="noreferrer">구글지도</a>
+        </div>
+      </section>
+
+      <section class="section contact">
+        <h2>연락하기</h2>
+        <div class="contact-links">
+          <a href="tel:01012345678">신랑에게 전화</a>
+          <a href="tel:01087654321">신부에게 전화</a>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast">복사되었습니다.</div>
+    <script src="./script.js"></script>
+  </body>
+</html>
