@@ -47,6 +47,35 @@ body {
   backdrop-filter: blur(1px);
 }
 
+.opening-spacer {
+  height: 100svh;
+  border-bottom: 1px solid var(--line);
+}
+
+.opening-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opening-stage img {
+  width: min(92vw, 520px);
+  height: min(86svh, 760px);
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.14);
+  transform-origin: center center;
+  transition: transform 0.45s ease, opacity 0.32s ease;
+}
+
+.opening-stage.done img {
+  opacity: 0;
+}
+
 .section {
   padding: 48px 24px;
   border-bottom: 1px solid var(--line);
