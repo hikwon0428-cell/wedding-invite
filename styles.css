@@ -4,6 +4,8 @@
   --muted: #666666;
   --line: #e9e9e9;
   --card: #fafafa;
+  --font-ko: "Noto Sans KR", sans-serif;
+  --font-en: "Cormorant Garamond", "Times New Roman", serif;
 }
 
 * {
@@ -16,7 +18,7 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: "Bodoni Moda", "Noto Serif KR", serif;
+  font-family: var(--font-ko);
   font-weight: 400;
 }
 
@@ -43,8 +45,7 @@ body {
   border-right: 1px solid var(--line);
   position: relative;
   z-index: 2;
-  background: rgba(255, 255, 255, 0.43);
-  backdrop-filter: blur(1px);
+  background: transparent;
 }
 
 .section {
@@ -55,7 +56,7 @@ body {
 .reveal {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transition: opacity 1.05s ease, transform 1.05s ease;
 }
 
 .reveal.is-visible {
@@ -71,13 +72,16 @@ body {
 
 .eyebrow {
   margin: 0 0 12px;
+  font-family: var(--font-en);
   font-size: 12px;
-  letter-spacing: 0.2em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--muted);
 }
 
 .hero-photo {
-  width: min(78vw, 320px);
+  width: min(88vw, 420px);
   aspect-ratio: 4 / 5;
   margin: 0 auto 20px;
   border-radius: 0;
@@ -95,9 +99,9 @@ body {
 
 .names {
   margin: 0;
-  font-family: "Bodoni Moda", "Noto Serif KR", serif;
+  font-family: var(--font-en);
   font-size: 50px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.08;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -110,47 +114,273 @@ body {
   color: #2e2e2e;
 }
 
-h2 {
-  margin: 0 0 18px;
-  font-family: "Bodoni Moda", "Noto Serif KR", serif;
-  font-size: 32px;
-  font-weight: 600;
+.date {
+  font-family: var(--font-en);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.location {
+  font-family: var(--font-ko);
+  font-weight: 400;
   letter-spacing: 0.02em;
 }
 
-.message p {
+.hero .eyebrow {
+  transition-delay: 0.04s;
+}
+
+.hero .hero-photo {
+  transition-delay: 0.12s;
+}
+
+.hero .names {
+  transition-delay: 0.2s;
+}
+
+.hero .date {
+  transition-delay: 0.32s;
+}
+
+.hero .location {
+  transition-delay: 0.44s;
+}
+
+h2 {
+  margin: 0 0 18px;
+  font-family: var(--font-ko);
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.section-title-en {
+  font-family: var(--font-en);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.invite-intro {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.invite-greeting {
   margin: 0;
-  line-height: 1.9;
+  font-family: var(--font-ko);
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 2;
+  color: #141414;
+  letter-spacing: -0.03em;
+}
+
+.invite-family {
+  margin: 22px 0 0;
+}
+
+.invite-family__row {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  column-gap: 0.4em;
+  row-gap: 0.15em;
+  font-family: var(--font-ko);
+  font-size: 10px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #1f1f1f;
+}
+
+.invite-family__row + .invite-family__row {
+  margin-top: 10px;
+}
+
+.invite-family__parents {
+  font-size: 9px;
+  letter-spacing: 0.01em;
+}
+
+.invite-family__suffix {
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.invite-family__name {
+  font-weight: 300;
+  font-size: 10px;
+}
+
+.countdown-thumbs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: min(100%, 380px);
+  margin: 0 auto 16px;
+}
+
+.countdown-thumb {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f5f5f5;
+}
+
+.countdown-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.countdown-line {
+  margin: 0 0 42px;
+  text-align: center;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.45;
+  color: #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+}
+
+.countdown-line__date,
+.countdown-line__venue {
+  display: block;
+}
+
+.countdown-line__date {
+  letter-spacing: 0.06em;
+}
+
+.countdown-line__venue {
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.wedding-cal {
+  max-width: 320px;
+  margin: 0 auto 44px;
+  padding: 0 4px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.wedding-cal__month-num {
+  text-align: center;
+  font-family: var(--font-en);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: #111111;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.wedding-cal__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.wedding-cal__weekdays span {
+  font-family: var(--font-en);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.wedding-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.wedding-cal__cell {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-en);
+  font-size: 12px;
+  font-weight: 500;
   color: #222222;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.wedding-cal__cell--empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.wedding-cal__cell--wedding {
+  border-color: transparent;
+  background: transparent;
+  color: #111111;
+  font-weight: 600;
+  border-radius: 0;
+  box-shadow: inset 0 -2px 0 0 #111111;
 }
 
 .countdown {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, max-content);
+  justify-content: center;
+  column-gap: 12px;
+  margin-bottom: 10px;
 }
 
 .countdown > div {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 12px;
   text-align: center;
-  padding: 16px 6px;
+  padding: 0;
 }
 
 .countdown span {
   display: block;
-  font-family: "Bodoni Moda", "Noto Serif KR", serif;
-  font-size: 30px;
-  line-height: 1;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .countdown small {
   display: block;
-  margin-top: 8px;
-  font-size: 10px;
-  letter-spacing: 0.14em;
+  margin-top: 2px;
+  font-family: var(--font-en);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--muted);
+}
+
+.countdown-subtitle {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a2a2a;
 }
 
 .info ul {
@@ -171,11 +401,13 @@ h2 {
 
 .info strong {
   font-size: 13px;
+  font-weight: 400;
   color: #3a3a3a;
 }
 
 .info span {
   font-size: 14px;
+  font-weight: 300;
 }
 
 .gallery .grid {
@@ -191,24 +423,117 @@ h2 {
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
+  font-family: var(--font-en);
   font-size: 12px;
-  letter-spacing: 0.1em;
+  font-weight: 300;
+  letter-spacing: 0.04em;
   color: #777777;
 }
 
 .account-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 16px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding: 14px 0;
+}
+
+.account-help {
+  margin: 0 0 14px;
+  color: #4f4f4f;
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .account-card + .account-card {
-  margin-top: 10px;
+  margin-top: 0;
+}
+
+.account-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .account-card p {
-  margin: 0 0 10px;
+  margin: 0;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.account-toggle {
+  width: auto;
+  min-width: 34px;
+  padding: 4px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #111111;
+  font-family: var(--font-ko);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+.account-list {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.account-list[hidden] {
+  display: none !important;
+}
+
+.account-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 10px 0;
+  background: transparent;
+}
+
+.account-item span {
+  font-size: 13px;
+  color: #2a2a2a;
+  line-height: 1.3;
+  word-break: keep-all;
+  font-family: var(--font-ko);
+}
+
+.account-meta {
+  display: grid;
+  gap: 2px;
+}
+
+.account-owner {
+  font-size: 11px;
+  font-weight: 300;
+  color: #9a9a9a;
+  line-height: 1.2;
+}
+
+.account-number {
+  font-size: 13px;
+  color: #2a2a2a;
+  line-height: 1.3;
+  word-break: keep-all;
+  font-family: var(--font-ko);
+}
+
+.account-copy {
+  width: auto;
+  min-width: 74px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
 }
 
 button,
@@ -222,6 +547,8 @@ button,
   padding: 12px 14px;
   text-decoration: none;
   font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
   text-align: center;
   display: inline-block;
 }
@@ -230,6 +557,41 @@ button,
 .contact-links {
   display: grid;
   gap: 10px;
+}
+
+.map-preview {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f8f8;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 10px;
+}
+
+.map-preview iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.map-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.kakao-map {
+  width: 100%;
+  height: 100%;
+}
+
+.map-note {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #7a7a7a;
+  line-height: 1.45;
 }
 
 .toast {
@@ -242,6 +604,8 @@ button,
   padding: 10px 14px;
   border-radius: 999px;
   font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.24s ease, transform 0.24s ease;
@@ -264,5 +628,26 @@ button,
 
   h2 {
     font-size: 27px;
+  }
+
+  .invite-greeting {
+    font-size: 10px;
+  }
+
+  .invite-family__parents,
+  .invite-family__suffix {
+    font-size: 9px;
+  }
+
+  .invite-family__name {
+    font-size: 10px;
+  }
+
+  .account-item {
+    grid-template-columns: 1fr;
+  }
+
+  .account-copy {
+    width: 100%;
   }
 }

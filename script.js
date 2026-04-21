@@ -58,15 +58,73 @@ async function copyText(value) {
   }
 }
 
+function normalizeAccountValue(rawValue) {
+  if (!rawValue) return "";
+  const digitsOnly = rawValue.replace(/\D/g, "");
+  if (digitsOnly.length > 0) return digitsOnly;
+  return rawValue.replace(/-/g, "");
+}
+
 document.querySelectorAll(".copy-btn").forEach((button) => {
   button.addEventListener("click", () => {
-    const value = button.getAttribute("data-copy");
+    const rawValue = button.getAttribute("data-copy");
+    if (!rawValue) return;
+
+    const shouldNormalize = button.classList.contains("account-copy");
+    const value = shouldNormalize ? normalizeAccountValue(rawValue) : rawValue;
     if (value) copyText(value);
   });
 });
 
+document.querySelectorAll(".account-card .account-list").forEach((list) => {
+  list.setAttribute("hidden", "");
+});
+
+document.querySelectorAll(".account-toggle").forEach((toggle) => {
+  toggle.textContent = "...";
+  toggle.setAttribute("aria-expanded", "false");
+
+  toggle.addEventListener("click", () => {
+    const card = toggle.closest(".account-card");
+    if (!card) return;
+
+    const targetList = card.querySelector(".account-list");
+    if (!targetList) return;
+
+    const shouldOpen = targetList.hasAttribute("hidden");
+    if (shouldOpen) {
+      targetList.removeAttribute("hidden");
+      toggle.setAttribute("aria-expanded", "true");
+      toggle.textContent = "X";
+    } else {
+      targetList.setAttribute("hidden", "");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.textContent = "...";
+    }
+  });
+});
+
+function initNaverMap() {
+  const mapElement = document.getElementById("naver-map");
+  if (!mapElement) return;
+  if (!window.naver || !window.naver.maps) return;
+
+  const center = new window.naver.maps.LatLng(34.9503, 127.4872);
+  const map = new window.naver.maps.Map(mapElement, {
+    center,
+    zoom: 16,
+  });
+
+  new window.naver.maps.Marker({
+    position: center,
+    map,
+  });
+}
+
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+window.addEventListener("load", initNaverMap);
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const revealSections = document.querySelectorAll(".reveal");

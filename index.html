@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -19,37 +19,96 @@
   <body>
     <canvas id="petal-canvas" aria-hidden="true"></canvas>
     <main class="invite">
-      <section class="hero section reveal">
-        <p class="eyebrow">WEDDING INVITATION</p>
-        <div class="hero-photo">
+      <section class="hero section">
+        <p class="eyebrow reveal">WEDDING INVITATION</p>
+        <div class="hero-photo reveal">
           <img src="./images/KakaoTalk_20260407_153823551.jpg" alt="메인사진" />
         </div>
-        <h1 class="names">JINWOO &amp;<br />HYEIN</h1>
-        <p class="date">2026. 08. 22 SAT 13:00 PM</p>
-        <p class="location">더헤윰 웨딩홀</p>
-      </section>
-
-      <section class="section message reveal">
-        <h2>초대합니다</h2>
-        <p>
-          어서옵쇼<br />
-          밥묵고가쇼잉<br />
-          머라쓸지 고민하기
-        </p>
+        <h1 class="names reveal">JINWOO &amp;<br />HYEIN</h1>
+        <p class="date reveal">2026. 08. 22 SAT 13:00 PM</p>
+        <p class="location reveal">더헤윰 웨딩홀</p>
       </section>
 
       <section class="section countdown-wrap reveal">
-        <h2>예식까지</h2>
+        <div class="invite-intro">
+          <p class="invite-greeting">
+            새로운 출발을 함께 축복해 주시면<br />
+            소중한 마음 오래 간직하겠습니다.
+          </p>
+          <div class="invite-family">
+            <p class="invite-family__row">
+              <span class="invite-family__parents">전봉근 · 이덕숙의 차남</span>
+              <span class="invite-family__name">전진우</span>
+            </p>
+            <p class="invite-family__row">
+              <span class="invite-family__parents">권성균 · 김수진의 장녀</span>
+              <span class="invite-family__name">권혜인</span>
+            </p>
+          </div>
+        </div>
+        <div class="countdown-thumbs" aria-hidden="true">
+          <figure class="countdown-thumb">
+            <img
+              src="./images/KakaoTalk_20260407_153823551.jpg"
+              alt=""
+              width="200"
+              height="200"
+              loading="lazy"
+            />
+          </figure>
+          <figure class="countdown-thumb">
+            <img
+              src="./images/KakaoTalk_20260407_153823551-removebg-preview.png"
+              alt=""
+              width="200"
+              height="200"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+        <p class="countdown-line">
+          <span class="countdown-line__date">2026.08.22 SAT 1:00 PM</span>
+          <span class="countdown-line__venue">THE HEYUM</span>
+        </p>
+        <div class="wedding-cal" aria-label="2026년 8월 달력">
+          <div class="wedding-cal__month-num" aria-hidden="true">8</div>
+          <div class="wedding-cal__weekdays" role="row">
+            <span>SUN</span>
+            <span>MON</span>
+            <span>TUE</span>
+            <span>WED</span>
+            <span>THU</span>
+            <span>FRI</span>
+            <span>SAT</span>
+          </div>
+          <div class="wedding-cal__grid" role="grid">
+            <span class="wedding-cal__cell">9</span>
+            <span class="wedding-cal__cell">10</span>
+            <span class="wedding-cal__cell">11</span>
+            <span class="wedding-cal__cell">12</span>
+            <span class="wedding-cal__cell">13</span>
+            <span class="wedding-cal__cell">14</span>
+            <span class="wedding-cal__cell">15</span>
+            <span class="wedding-cal__cell">16</span>
+            <span class="wedding-cal__cell">17</span>
+            <span class="wedding-cal__cell">18</span>
+            <span class="wedding-cal__cell">19</span>
+            <span class="wedding-cal__cell">20</span>
+            <span class="wedding-cal__cell">21</span>
+            <span class="wedding-cal__cell wedding-cal__cell--wedding">22</span>
+          </div>
+        </div>
         <div class="countdown" id="countdown">
           <div><span id="days">0</span><small>DAYS</small></div>
           <div><span id="hours">0</span><small>HOURS</small></div>
           <div><span id="minutes">0</span><small>MIN</small></div>
           <div><span id="seconds">0</span><small>SEC</small></div>
         </div>
+        <p class="countdown-subtitle">DAYS UNTIL THE WEDDING</p>
       </section>
 
       <section class="section info reveal">
-        <h2>예식 안내</h2>
+        <h2>INFO</h2>
         <ul>
           <li><strong>일시</strong><span>2026년 08월 22일 토요일 오후 1시</span></li>
           <li><strong>장소</strong><span>더헤윰 웨딩홀</span></li>
@@ -58,7 +117,7 @@
       </section>
 
       <section class="section gallery reveal">
-        <h2>Gallery</h2>
+        <h2 class="section-title-en">Gallery</h2>
         <div class="grid">
           <div class="photo-placeholder">PHOTO 01</div>
           <div class="photo-placeholder">PHOTO 02</div>
@@ -69,39 +128,126 @@
 
       <section class="section account reveal">
         <h2>마음 전하실 곳</h2>
+        <p class="account-help">
+          참석이 어려우신 분들을 위해 계좌번호를 기재했습니다. 너그러운 마음으로 양해 부탁드립니다.
+        </p>
         <div class="account-card">
-          <p>신랑 전진우</p>
-          <button class="copy-btn" data-copy="국민은행 111111-11-111111">
-            국민은행 111111-11-111111 복사
-          </button>
+          <div class="account-head">
+            <p>신랑측</p>
+            <button class="account-toggle" type="button" aria-expanded="false">
+              ...
+            </button>
+          </div>
+          <div class="account-list" hidden>
+            <div class="account-item">
+              <div class="account-meta">
+                <small class="account-owner">신랑</small>
+                <span class="account-number">전진우 국민은행 111111-11-111111</span>
+              </div>
+              <button class="copy-btn account-copy" data-copy="국민은행 111111-11-111111">
+                복사하기
+              </button>
+            </div>
+            <div class="account-item">
+              <div class="account-meta">
+                <small class="account-owner">신랑 아버지</small>
+                <span class="account-number">전봉근 신한은행 222222-22-222222</span>
+              </div>
+              <button class="copy-btn account-copy" data-copy="신한은행 222222-22-222222">
+                복사하기
+              </button>
+            </div>
+            <div class="account-item">
+              <div class="account-meta">
+                <small class="account-owner">신랑 어머니</small>
+                <span class="account-number">이덕숙 카카오뱅크 3333-33-3333333</span>
+              </div>
+              <button class="copy-btn account-copy" data-copy="카카오뱅크 3333-33-3333333">
+                복사하기
+              </button>
+            </div>
+          </div>
         </div>
         <div class="account-card">
-          <p>신부 권혜인</p>
-          <button class="copy-btn" data-copy="신한은행 222-222-222222">
-            신한은행 222-222-222222 복사
-          </button>
+          <div class="account-head">
+            <p>신부측</p>
+            <button class="account-toggle" type="button" aria-expanded="false">
+              ...
+            </button>
+          </div>
+          <div class="account-list" hidden>
+            <div class="account-item">
+              <div class="account-meta">
+                <small class="account-owner">신부</small>
+                <span class="account-number">권혜인 국민은행 579302-04-051621</span>
+              </div>
+              <button class="copy-btn account-copy" data-copy="국민은행 579302-04-051621">
+                복사하기
+              </button>
+            </div>
+            <div class="account-item">
+              <div class="account-meta">
+                <small class="account-owner">신부 아버지</small>
+                <span class="account-number">권성균 농협은행 4444-44-444444</span>
+              </div>
+              <button class="copy-btn account-copy" data-copy="농협은행 4444-44-444444">
+                복사하기
+              </button>
+            </div>
+            <div class="account-item">
+              <div class="account-meta">
+                <small class="account-owner">신부 어머니</small>
+                <span class="account-number">김수진 하나은행 555-555555-55507</span>
+              </div>
+              <button class="copy-btn account-copy" data-copy="하나은행 555-555555-55507">
+                복사하기
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
       <section class="section map reveal">
-        <h2>오시는 길</h2>
+        <h2 class="section-title-en">LOCATION</h2>
+        <div class="map-preview">
+          <div id="naver-map" class="kakao-map" aria-label="네이버 지도"></div>
+        </div>
+        <p class="map-note">
+          아래 네이버지도 또는 카카오맵 버튼으로 길찾기를 열 수 있습니다.
+        </p>
         <div class="map-links">
-          <a href="https://map.kakao.com" target="_blank" rel="noreferrer">카카오맵</a>
-          <a href="https://map.naver.com" target="_blank" rel="noreferrer">네이버지도</a>
-          <a href="https://maps.google.com" target="_blank" rel="noreferrer">구글지도</a>
+          <a
+            href="https://map.kakao.com/?q=%EC%A0%84%EB%9D%BC%EB%82%A8%EB%8F%84%20%EC%88%9C%EC%B2%9C%EC%8B%9C%20%EC%88%9C%EC%B2%9C%EB%A7%8C%EA%B8%B8%2071"
+            target="_blank"
+            rel="noreferrer"
+            >카카오맵</a
+          >
+          <a
+            href="https://map.naver.com/p/search/%EC%A0%84%EB%9D%BC%EB%82%A8%EB%8F%84%20%EC%88%9C%EC%B2%9C%EC%8B%9C%20%EC%88%9C%EC%B2%9C%EB%A7%8C%EA%B8%B8%2071"
+            target="_blank"
+            rel="noreferrer"
+            >네이버지도</a
+          >
+          <a
+            href="https://maps.google.com/?q=%EC%A0%84%EB%9D%BC%EB%82%A8%EB%8F%84%20%EC%88%9C%EC%B2%9C%EC%8B%9C%20%EC%88%9C%EC%B2%9C%EB%A7%8C%EA%B8%B8%2071"
+            target="_blank"
+            rel="noreferrer"
+            >구글지도</a
+          >
         </div>
       </section>
 
       <section class="section contact reveal">
-        <h2>연락하기</h2>
+        <h2>WITH OUR WHOLE HEART,</h2>
         <div class="contact-links">
-          <a href="tel:01012345678">신랑에게 전화</a>
-          <a href="tel:01087654321">신부에게 전화</a>
+          <a href="tel:01087000619">신랑에게 전화</a>
+          <a href="tel:01094368203">신부에게 전화</a>
         </div>
       </section>
     </main>
 
     <div class="toast" id="toast">복사되었습니다.</div>
+    <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=hu9lx6ehw2" defer></script>
     <script src="./script.js"></script>
   </body>
 </html>
