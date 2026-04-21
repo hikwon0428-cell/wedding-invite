@@ -104,20 +104,25 @@ document.querySelectorAll(".account-toggle").forEach((toggle) => {
   });
 });
 
+/** 더헤윰 웨딩홀 (전남 순천시 순천만길 71 / 오천동 일대) — 네이버 지도 검색 결과와 맞춘 WGS84 */
+const HEYUM_WEDDING_LAT = 34.919585;
+const HEYUM_WEDDING_LNG = 127.497563;
+
 function initNaverMap() {
   const mapElement = document.getElementById("naver-map");
   if (!mapElement) return;
   if (!window.naver || !window.naver.maps) return;
 
-  const center = new window.naver.maps.LatLng(34.9503, 127.4872);
+  const center = new window.naver.maps.LatLng(HEYUM_WEDDING_LAT, HEYUM_WEDDING_LNG);
   const map = new window.naver.maps.Map(mapElement, {
     center,
-    zoom: 16,
+    zoom: 17,
   });
 
   new window.naver.maps.Marker({
     position: center,
     map,
+    title: "더헤윰 웨딩홀",
   });
 }
 
