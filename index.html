@@ -19,14 +19,36 @@
   <body>
     <canvas id="petal-canvas" aria-hidden="true"></canvas>
     <main class="invite">
+      <section class="section intro-cover">
+        <div class="intro-cover__panel">
+          <p class="intro-top-text">
+            JINWOO<br />
+            AND HYEIN
+          </p>
+          <p class="intro-center-text" aria-label="진우와 혜인이 결혼합니다">
+            <span class="intro-center-line">
+              <span class="intro-word">진우</span>
+              <span class="intro-word">&amp;</span>
+              <span class="intro-word">혜인</span>
+            </span>
+            <span class="intro-center-line">
+              <span class="intro-word intro-word-final">결혼합니다.</span>
+            </span>
+          </p>
+          <p class="intro-bottom-text">
+            2026. 08. 22 SAT 1:00 PM<br />
+            THE HEYUM
+          </p>
+        </div>
+      </section>
       <section class="hero section">
         <p class="eyebrow reveal">WEDDING INVITATION</p>
         <div class="hero-photo reveal">
           <img src="./images/KakaoTalk_20260407_153823551.jpg" alt="메인사진" />
         </div>
-        <h1 class="names reveal">JINWOO &amp;<br />HYEIN</h1>
-        <p class="date reveal">2026. 08. 22 SAT 13:00 PM</p>
-        <p class="location reveal">더헤윰 웨딩홀</p>
+        <h1 class="names reveal intro-lift-target">JINWOO<br />&amp; HYEIN</h1>
+        <p class="date reveal intro-lift-target">2026. 08. 22 SAT 13:00 PM</p>
+        <p class="location reveal intro-lift-target">더헤윰 웨딩홀</p>
       </section>
 
       <section class="section countdown-wrap reveal">
@@ -66,10 +88,13 @@
             />
           </figure>
         </div>
-        <p class="countdown-line">
-          <span class="countdown-line__date">2026.08.22 SAT 1:00 PM</span>
-          <span class="countdown-line__venue">THE HEYUM</span>
-        </p>
+        <section class="info reveal">
+          <ul>
+            <li><strong>일시</strong><span>2026년 08월 22일 토요일 오후 1시</span></li>
+            <li><strong>장소</strong><span>더헤윰 웨딩홀</span></li>
+            <li><strong>주소</strong><span>전라남도 순천시 순천만길 71</span></li>
+          </ul>
+        </section>
         <div class="wedding-cal" aria-label="2026년 8월 달력">
           <div class="wedding-cal__month-num" aria-hidden="true">8</div>
           <div class="wedding-cal__weekdays" role="row">
@@ -105,15 +130,6 @@
           <div><span id="seconds">0</span><small>SEC</small></div>
         </div>
         <p class="countdown-subtitle">DAYS UNTIL THE WEDDING</p>
-      </section>
-
-      <section class="section info reveal">
-        <h2>INFO</h2>
-        <ul>
-          <li><strong>일시</strong><span>2026년 08월 22일 토요일 오후 1시</span></li>
-          <li><strong>장소</strong><span>더헤윰 웨딩홀</span></li>
-          <li><strong>주소</strong><span>전라남도 순천시 순천만길 71</span></li>
-        </ul>
       </section>
 
       <section class="section gallery reveal">
@@ -208,9 +224,26 @@
       </section>
 
       <section class="section map reveal">
-        <h2 class="section-title-en">LOCATION</h2>
+        <div class="map-heading">
+          <h2 class="section-title-en">LOCATION</h2>
+          <p class="map-subtitle-ko">오시는 길</p>
+        </div>
         <div class="map-preview">
           <div id="naver-map" class="kakao-map" aria-label="네이버 지도: 더헤윰 웨딩홀"></div>
+        </div>
+        <div class="directions-list" aria-label="오시는 길 안내">
+          <p class="directions-item">
+            시내버스 : 66번 (통천 하차), 66번 (통천마을 하차)
+          </p>
+          <p class="directions-item">
+            고속버스 : 순천종합버스터미널 하차 → 시내 버스 이용시 ‘버스터미널’ 정류장에서 66번 버스 또는 택시로 약 10분 거리(3.9km)
+          </p>
+          <p class="directions-item">
+            기차 : 순천역 하차 → &apos;순천역&apos; 정류장에서 66번 버스 또는 택시로 약 10분 거리(4.2km)
+          </p>
+          <p class="directions-item">
+            자가용 : 네비게이션 &quot;전라남도 순천시 순천만길 71&quot; 입력
+          </p>
         </div>
         <p class="map-note">
           네이버·카카오·티맵에서 길찾기를 열 수 있습니다.
@@ -238,10 +271,18 @@
 
       <section class="section contact reveal">
         <h2>WITH OUR WHOLE HEART,</h2>
+        <p class="contact-copy">
+          귀한 발걸음 하시는 모든 분의 가정에<br />
+          행복이 가득하시길 진심으로 기원합니다.
+        </p>
         <div class="contact-links">
-          <a href="tel:01087000619">신랑에게 전화</a>
-          <a href="tel:01094368203">신부에게 전화</a>
+          <a href="tel:01087000619">신랑에게 연락하기</a>
+          <a href="tel:01094368203">신부에게 연락하기</a>
         </div>
+        <p class="contact-copy contact-copy--bottom">
+          소중한 분들과 함께할 이 날을<br />
+          마음 깊이 기다리고 있겠습니다.
+        </p>
       </section>
     </main>
 

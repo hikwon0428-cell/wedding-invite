@@ -28,6 +28,11 @@ body {
   overflow-x: hidden;
 }
 
+body.intro-lock {
+  overflow: hidden;
+  touch-action: none;
+}
+
 #petal-canvas {
   position: fixed;
   inset: 0;
@@ -50,7 +55,7 @@ body {
 
 .section {
   padding: 48px 24px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: none;
 }
 
 .reveal {
@@ -88,6 +93,114 @@ body {
   overflow: hidden;
   border: 1px solid #ececec;
   background: linear-gradient(180deg, #fafafa 0%, #f3f3f3 100%);
+}
+
+.intro-cover {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: min(100%, 460px);
+  height: 100dvh;
+  transform: translateX(-50%);
+  padding: 0;
+  border-bottom: 0;
+  z-index: 30;
+  opacity: 1;
+  transition: transform 0.9s ease, opacity 0.9s ease;
+}
+
+.intro-cover__panel {
+  min-height: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: 64px 24px 56px;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+
+.intro-top-text {
+  margin: 0;
+  font-family: var(--font-en);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: #3a3a3a;
+}
+
+.intro-cover.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+
+.intro-lift-target {
+  will-change: transform, opacity;
+}
+
+.intro-pass .intro-lift-target {
+  animation: introLiftUp 0.9s ease both;
+}
+
+@keyframes introLiftUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.intro-center-text {
+  margin: 0;
+  font-family: var(--font-ko);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: #111111;
+}
+
+.intro-center-line {
+  display: block;
+}
+
+.intro-center-line + .intro-center-line {
+  margin-top: 2px;
+}
+
+.intro-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.intro-word.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.intro-word-final {
+  font-size: 18px;
+}
+
+.intro-bottom-text {
+  margin: 0;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #2a2a2a;
+  line-height: 1.6;
 }
 
 .hero-photo img {
@@ -169,7 +282,7 @@ h2 {
 .invite-greeting {
   margin: 0;
   font-family: var(--font-ko);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 300;
   line-height: 2;
   color: #141414;
@@ -189,36 +302,36 @@ h2 {
   column-gap: 0.4em;
   row-gap: 0.15em;
   font-family: var(--font-ko);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 300;
   line-height: 1.75;
   color: #1f1f1f;
 }
 
 .invite-family__row + .invite-family__row {
-  margin-top: 10px;
+  margin-top: 13px;
 }
 
 .invite-family__parents {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.01em;
 }
 
 .invite-family__suffix {
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 300;
   letter-spacing: 0;
 }
 
 .invite-family__name {
   font-weight: 300;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .countdown-thumbs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 13px;
   width: 100%;
   max-width: min(100%, 380px);
   margin: 0 auto 16px;
@@ -226,8 +339,8 @@ h2 {
 
 .countdown-thumb {
   margin: 0;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   aspect-ratio: 1 / 1;
   background: #f5f5f5;
@@ -241,10 +354,10 @@ h2 {
 }
 
 .countdown-line {
-  margin: 0 0 42px;
+  margin: 0 0 150px;
   text-align: center;
   font-family: var(--font-en);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: normal;
   line-height: 1.45;
@@ -272,7 +385,7 @@ h2 {
 
 .wedding-cal {
   max-width: 320px;
-  margin: 0 auto 44px;
+  margin: 0 auto 164px;
   padding: 0 4px 4px;
   background: transparent;
   border: none;
@@ -288,19 +401,19 @@ h2 {
   letter-spacing: 0.03em;
   color: #111111;
   margin-top: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 13px;
 }
 
 .wedding-cal__weekdays {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 2px;
-  margin-bottom: 6px;
+  margin-bottom: 13px;
 }
 
 .wedding-cal__weekdays span {
   font-family: var(--font-en);
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.04em;
   text-align: center;
@@ -319,10 +432,10 @@ h2 {
   display: grid;
   place-items: center;
   font-family: var(--font-en);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: #222222;
-  border-radius: 8px;
+  border-radius: 13px;
   border: 1px solid transparent;
 }
 
@@ -344,8 +457,8 @@ h2 {
   display: grid;
   grid-template-columns: repeat(4, max-content);
   justify-content: center;
-  column-gap: 12px;
-  margin-bottom: 10px;
+  column-gap: 13px;
+  margin-bottom: 13px;
 }
 
 .countdown > div {
@@ -356,7 +469,7 @@ h2 {
 .countdown span {
   display: block;
   font-family: var(--font-en);
-  font-size: 11px;
+  font-size: 19px;
   font-weight: 600;
   line-height: 1.2;
 }
@@ -365,7 +478,7 @@ h2 {
   display: block;
   margin-top: 2px;
   font-family: var(--font-en);
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -373,10 +486,10 @@ h2 {
 }
 
 .countdown-subtitle {
-  margin: 0;
+  margin: 0 0 320px;
   text-align: center;
   font-family: var(--font-en);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -389,24 +502,38 @@ h2 {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  align-items: center;
 }
 
 .info li {
-  display: grid;
-  grid-template-columns: 54px 1fr;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
   gap: 8px;
   line-height: 1.6;
+  text-align: center;
+}
+
+.countdown-wrap .info {
+  margin-bottom: 320px;
+}
+
+.section.gallery,
+.section.account,
+.section.map,
+.section.contact {
+  margin-top: 320px;
 }
 
 .info strong {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 400;
   color: #3a3a3a;
 }
 
 .info span {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 300;
 }
 
@@ -438,11 +565,17 @@ h2 {
   padding: 14px 0;
 }
 
-.account-help {
-  margin: 0 0 14px;
+.account-help,
+.map-subtitle-ko,
+.directions-item {
   color: #4f4f4f;
   font-size: 13px;
   line-height: 1.55;
+  font-weight: 400;
+}
+
+.account-help {
+  margin: 0 0 14px;
 }
 
 .account-card + .account-card {
@@ -591,6 +724,52 @@ button,
 .contact-links {
   display: grid;
   gap: 10px;
+  margin: 34px 0;
+}
+
+.contact-links a {
+  width: auto;
+  justify-self: center;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.contact-copy {
+  margin: 0 0 14px;
+  color: #4f4f4f;
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 400;
+  text-align: center;
+}
+
+.contact-copy--bottom {
+  margin: 34px 0 0;
+}
+
+.map-heading h2 {
+  margin-bottom: 6px;
+}
+
+.map-subtitle-ko {
+  margin: 0 0 20px;
+}
+
+.directions-list {
+  margin: 0 0 18px;
+  border-top: 1px solid var(--line);
+}
+
+.directions-item {
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.directions-item:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
 }
 
 .map-preview {
@@ -623,9 +802,11 @@ button,
 
 .map-note {
   margin: 0 0 12px;
-  font-size: 12px;
-  color: #7a7a7a;
+  text-align: right;
+  font-size: 11px;
+  font-weight: 300;
   line-height: 1.45;
+  color: #9a9a9a;
 }
 
 .toast {
@@ -674,7 +855,7 @@ button,
   }
 
   .invite-family__name {
-    font-size: 10px;
+    font-size: 13px;
   }
 
   .account-item {

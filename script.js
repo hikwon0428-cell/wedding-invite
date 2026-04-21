@@ -126,10 +126,45 @@ function initNaverMap() {
   });
 }
 
+function initIntroSequence() {
+  const introCover = document.querySelector(".intro-cover");
+  if (!introCover) return;
+  document.body.classList.add("intro-lock");
+  const words = Array.from(document.querySelectorAll(".intro-word"));
+  if (words.length === 0) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    words.forEach((word) => word.classList.add("is-visible"));
+    window.setTimeout(() => {
+      document.body.classList.add("intro-pass");
+      introCover.classList.add("is-hidden");
+      document.body.classList.remove("intro-lock");
+    }, 900);
+    return;
+  }
+
+  const startDelay = 500;
+  const revealDelays = [0, 800, 1600, 2800];
+  words.forEach((word, index) => {
+    const revealAt = startDelay + (revealDelays[index] ?? revealDelays[revealDelays.length - 1]);
+    window.setTimeout(() => word.classList.add("is-visible"), revealAt);
+  });
+
+  const lastRevealAt = startDelay + revealDelays[revealDelays.length - 1];
+  const totalDuration = lastRevealAt + 1700;
+  window.setTimeout(() => {
+    document.body.classList.add("intro-pass");
+    introCover.classList.add("is-hidden");
+    document.body.classList.remove("intro-lock");
+  }, totalDuration);
+}
+
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
 window.addEventListener("load", initNaverMap);
+window.addEventListener("load", initIntroSequence);
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const revealSections = document.querySelectorAll(".reveal");
