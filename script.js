@@ -119,7 +119,7 @@ function initNaverMap() {
     zoom: 17,
   });
 
-  const query = "전라남도 순천시 순천만길 71";
+  const query = "더헤윰웨딩컨벤션 전라남도 순천시 오천동 389";
   const geocoder = window.naver.maps.Service;
   if (!geocoder || typeof geocoder.geocode !== "function") return;
 
