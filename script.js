@@ -123,6 +123,11 @@ function initNaverMap() {
     position: fallbackCenter,
     map,
     title: "더헤윰 웨딩홀",
+    icon: {
+      content:
+        '<div style="width:16px;height:16px;background:#1f7dff;border:2px solid #ffffff;border-radius:999px;box-shadow:0 0 0 1px rgba(0,0,0,0.2);"></div>',
+      anchor: new window.naver.maps.Point(8, 8),
+    },
   });
 }
 
