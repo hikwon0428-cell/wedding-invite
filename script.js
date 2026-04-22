@@ -113,16 +113,34 @@ function initNaverMap() {
   if (!mapElement) return;
   if (!window.naver || !window.naver.maps) return;
 
-  const center = new window.naver.maps.LatLng(HEYUM_WEDDING_LAT, HEYUM_WEDDING_LNG);
+  const fallbackCenter = new window.naver.maps.LatLng(HEYUM_WEDDING_LAT, HEYUM_WEDDING_LNG);
   const map = new window.naver.maps.Map(mapElement, {
-    center,
+    center: fallbackCenter,
     zoom: 17,
   });
 
-  new window.naver.maps.Marker({
-    position: center,
+  const marker = new window.naver.maps.Marker({
+    position: fallbackCenter,
     map,
     title: "더헤윰 웨딩홀",
+  });
+
+  const query = "더헤윰 웨딩홀 순천";
+  const geocoder = window.naver.maps.Service;
+  if (!geocoder || typeof geocoder.geocode !== "function") return;
+
+  geocoder.geocode({ query }, (status, response) => {
+    if (status !== window.naver.maps.Service.Status.OK) return;
+    const first = response?.v2?.addresses?.[0];
+    if (!first) return;
+
+    const lat = Number(first.y);
+    const lng = Number(first.x);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    const position = new window.naver.maps.LatLng(lat, lng);
+    map.setCenter(position);
+    marker.setPosition(position);
   });
 }
 
