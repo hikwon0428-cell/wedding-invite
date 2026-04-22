@@ -119,15 +119,28 @@ function initNaverMap() {
     zoom: 17,
   });
 
+  const weddingMarkerSvg =
+    "data:image/svg+xml;utf8," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="44" viewBox="0 0 34 44">' +
+        '<path d="M17 43c-4.4-6.6-13-14.7-13-24.3C4 10.2 9.8 4 17 4s13 6.2 13 14.7C30 28.3 21.4 36.4 17 43z" fill="#f4a3c4"/>' +
+        '<path d="M17 40.2c-3.8-5.6-11.3-12.8-11.3-21.5C5.7 11.4 10.7 6 17 6s11.3 5.4 11.3 12.7c0 8.7-7.5 15.9-11.3 21.5z" fill="#f7b9d3"/>' +
+        '<path d="M17 24.8c-4-2.6-7.2-4.7-7.2-8.4 0-2.2 1.7-4 3.9-4 1.4 0 2.6.7 3.3 1.8.7-1.1 1.9-1.8 3.3-1.8 2.2 0 3.9 1.8 3.9 4 0 3.7-3.2 5.8-7.2 8.4z" fill="#ffffff"/>' +
+      "</svg>"
+    );
+
   new window.naver.maps.Marker({
     position: fallbackCenter,
     map,
     title: "더헤윰 웨딩홀",
     icon: {
-      content:
-        '<div style="font-size:22px;line-height:1;color:#f4a3c4;text-shadow:0 1px 0 #ffffff, 0 0 2px rgba(0,0,0,0.2);">♥</div>',
-      anchor: new window.naver.maps.Point(11, 11),
+      url: weddingMarkerSvg,
+      size: new window.naver.maps.Size(34, 44),
+      scaledSize: new window.naver.maps.Size(34, 44),
+      origin: new window.naver.maps.Point(0, 0),
+      anchor: new window.naver.maps.Point(17, 44),
     },
+    zIndex: 1000,
   });
 }
 
