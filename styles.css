@@ -5,7 +5,7 @@
   --line: #e9e9e9;
   --card: #fafafa;
   --font-ko: "Noto Sans KR", sans-serif;
-  --font-en: "Cormorant Garamond", "Times New Roman", serif;
+  --font-en: "Montserrat", "Helvetica Neue", Arial, sans-serif;
 }
 
 * {
@@ -18,8 +18,8 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-ko);
-  font-weight: 400;
+  font-family: var(--font-en), var(--font-ko);
+  font-weight: 300;
 }
 
 body {
@@ -214,7 +214,7 @@ body.intro-lock {
   margin: 0;
   font-family: var(--font-en);
   font-size: 50px;
-  font-weight: 600;
+  font-weight: 300;
   line-height: 1.08;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -263,8 +263,8 @@ body.intro-lock {
 h2 {
   margin: 0 0 18px;
   font-family: var(--font-ko);
-  font-size: 32px;
-  font-weight: 500;
+  font-size: 28px;
+  font-weight: 300;
   letter-spacing: 0;
 }
 
@@ -272,6 +272,7 @@ h2 {
   font-family: var(--font-en);
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  font-weight: 300;
 }
 
 .invite-intro {
@@ -396,7 +397,7 @@ h2 {
   text-align: center;
   font-family: var(--font-en);
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 300;
   line-height: 1;
   letter-spacing: 0.03em;
   color: #111111;
@@ -414,7 +415,7 @@ h2 {
 .wedding-cal__weekdays span {
   font-family: var(--font-en);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 300;
   letter-spacing: 0.04em;
   text-align: center;
   text-transform: uppercase;
@@ -433,7 +434,7 @@ h2 {
   place-items: center;
   font-family: var(--font-en);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 300;
   color: #222222;
   border-radius: 13px;
   border: 1px solid transparent;
@@ -448,7 +449,7 @@ h2 {
   border-color: transparent;
   background: transparent;
   color: #111111;
-  font-weight: 600;
+  font-weight: 400;
   border-radius: 0;
   box-shadow: inset 0 -2px 0 0 #111111;
 }
@@ -470,7 +471,7 @@ h2 {
   display: block;
   font-family: var(--font-en);
   font-size: 19px;
-  font-weight: 600;
+  font-weight: 300;
   line-height: 1.2;
 }
 
@@ -479,18 +480,18 @@ h2 {
   margin-top: 2px;
   font-family: var(--font-en);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 300;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
 .countdown-subtitle {
-  margin: 0 0 320px;
+  margin: 0 0 160px;
   text-align: center;
   font-family: var(--font-en);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 300;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #2a2a2a;
@@ -519,16 +520,23 @@ h2 {
   margin-bottom: 320px;
 }
 
-.section.gallery,
+.section.gallery {
+  margin-top: 160px;
+}
+
 .section.account,
 .section.map,
 .section.contact {
   margin-top: 320px;
 }
 
+.section.guestbook {
+  margin-top: 320px;
+}
+
 .info strong {
   font-size: 11px;
-  font-weight: 400;
+  font-weight: 300;
   color: #3a3a3a;
 }
 
@@ -537,24 +545,185 @@ h2 {
   font-weight: 300;
 }
 
-.gallery .grid {
+.gallery-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.photo-placeholder {
-  border: 1px solid var(--line);
-  background: #f5f5f5;
-  border-radius: 12px;
+.gallery-item {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  background: #f3f3f3;
   aspect-ratio: 1 / 1;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-en);
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 0.04em;
-  color: #777777;
+  overflow: hidden;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-more {
+  width: 100%;
+  margin: 14px 0 0;
+  border: none;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  color: #111111;
+  padding: 10px 0 0;
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+  display: block;
+}
+
+.gallery-more-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.gallery-more[aria-expanded="true"] .gallery-more-arrow {
+  transform: rotate(180deg);
+}
+
+.gallery-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+}
+
+.gallery-modal[hidden] {
+  display: none;
+}
+
+.gallery-modal-image {
+  width: min(92vw, 520px);
+  max-height: 84dvh;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.gallery-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1;
+  width: auto;
+  padding: 0;
+}
+
+.gallery-modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 42px;
+  line-height: 1;
+  width: auto;
+  padding: 0 8px;
+}
+
+.gallery-modal-prev {
+  left: 10px;
+}
+
+.gallery-modal-next {
+  right: 10px;
+}
+
+body.gallery-modal-open {
+  overflow: hidden;
+}
+
+/* Override shared button style for gallery controls */
+.gallery-item,
+.gallery-more,
+.gallery-modal-close,
+.gallery-modal-nav {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  width: auto;
+}
+
+.gallery-more {
+  color: #7a7a7a;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 14px 0 0;
+  border-top: 1px solid var(--line);
+  padding: 10px 0 0;
+  text-align: center;
+  line-height: 1;
+}
+
+.gallery-more-arrow {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--line);
+  padding-bottom: 1px;
+  animation: galleryArrowFloat 1.2s ease-in-out infinite;
+}
+
+@keyframes galleryArrowFloat {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.gallery-more[aria-expanded="true"] .gallery-more-arrow {
+  animation: none;
+  transform: rotate(180deg);
+}
+
+.gallery-modal-close,
+.gallery-modal-nav {
+  color: #ffffff;
+}
+
+.gallery-modal-close {
+  font-size: 34px;
+}
+
+.gallery-modal-nav {
+  font-size: 42px;
+}
+
+.gallery-modal-image {
+  touch-action: pan-y;
 }
 
 .account-card {
@@ -679,7 +848,7 @@ button,
   padding: 12px 14px;
   text-decoration: none;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 200;
   letter-spacing: 0.02em;
   text-align: center;
   display: inline-block;
@@ -744,8 +913,176 @@ button,
   text-align: center;
 }
 
+.guestbook-help {
+  margin: 0 0 14px;
+  color: #4f4f4f;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.guestbook-form {
+  display: grid;
+  gap: 8px;
+}
+
+.guestbook-form input,
+.guestbook-form textarea {
+  width: 100%;
+  border: 1px solid #dddddd;
+  border-radius: 0;
+  padding: 10px 12px;
+  font-family: var(--font-ko);
+  font-size: 13px;
+  color: #111111;
+  background: #ffffff;
+}
+
+.guestbook-form textarea {
+  resize: none;
+}
+
+.guestbook-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.guestbook-pagination {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.guestbook-page-btn {
+  width: auto;
+  min-width: 28px;
+  border: 1px solid #d8d8d8;
+  border-radius: 0;
+  background: #ffffff;
+  color: #666666;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 8px;
+}
+
+.guestbook-page-btn.is-active {
+  border-color: #111111;
+  color: #111111;
+  font-weight: 500;
+}
+
+.guestbook-item {
+  border: 1px solid #e6e6e6;
+  padding: 10px 12px;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.guestbook-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.guestbook-item-name {
+  font-size: 12px;
+  font-weight: 300;
+  color: #222222;
+}
+
+.guestbook-item-date {
+  font-size: 11px;
+  color: #9a9a9a;
+}
+
+.guestbook-item-message {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #444444;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  text-indent: 0;
+}
+
+.guestbook-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.guestbook-fab {
+  width: auto;
+  border: 1px solid #111111;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.guestbook-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 110;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.guestbook-modal[hidden] {
+  display: none;
+}
+
+.guestbook-modal-card {
+  width: min(100%, 460px);
+  background: #ffffff;
+  border-top: 1px solid #dddddd;
+  padding: 18px 16px 16px;
+  position: relative;
+}
+
+.guestbook-modal-title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-family: var(--font-ko);
+  font-weight: 500;
+}
+
+.guestbook-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: auto;
+  border: none;
+  background: transparent;
+  color: #111111;
+  font-size: 28px;
+  line-height: 1;
+  padding: 0;
+}
+
+body.guestbook-modal-open {
+  overflow: hidden;
+}
+
 .contact-copy--bottom {
   margin: 34px 0 0;
+}
+
+.contact h2 {
+  font-family: var(--font-en);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .map-heading h2 {

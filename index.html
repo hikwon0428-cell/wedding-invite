@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -95,7 +95,7 @@
             <li><strong>주소</strong><span>전라남도 순천시 순천만길 71</span></li>
           </ul>
         </section>
-        <div class="wedding-cal" aria-label="2026년 8월 달력">
+        <div class="wedding-cal reveal" aria-label="2026년 8월 달력">
           <div class="wedding-cal__month-num" aria-hidden="true">8</div>
           <div class="wedding-cal__weekdays" role="row">
             <span>SUN</span>
@@ -123,23 +123,20 @@
             <span class="wedding-cal__cell wedding-cal__cell--wedding">22</span>
           </div>
         </div>
-        <div class="countdown" id="countdown">
+        <div class="countdown reveal" id="countdown">
           <div><span id="days">0</span><small>DAYS</small></div>
           <div><span id="hours">0</span><small>HOURS</small></div>
           <div><span id="minutes">0</span><small>MIN</small></div>
           <div><span id="seconds">0</span><small>SEC</small></div>
         </div>
-        <p class="countdown-subtitle">DAYS UNTIL THE WEDDING</p>
+        <p class="countdown-subtitle reveal">DAYS UNTIL THE WEDDING</p>
       </section>
 
       <section class="section gallery reveal">
-        <h2 class="section-title-en">Gallery</h2>
-        <div class="grid">
-          <div class="photo-placeholder">PHOTO 01</div>
-          <div class="photo-placeholder">PHOTO 02</div>
-          <div class="photo-placeholder">PHOTO 03</div>
-          <div class="photo-placeholder">PHOTO 04</div>
-        </div>
+        <div class="gallery-grid" id="gallery-grid" aria-label="갤러리 미리보기"></div>
+        <button class="gallery-more" id="gallery-more" type="button" aria-expanded="false">
+          <span class="gallery-more-arrow" aria-hidden="true">⌄</span>
+        </button>
       </section>
 
       <section class="section account reveal">
@@ -269,6 +266,16 @@
         </div>
       </section>
 
+      <section class="section guestbook reveal">
+        <h2 class="section-title-en">Guestbook</h2>
+        <p class="guestbook-help">축하 메시지를 남겨주세요.</p>
+        <div class="guestbook-actions">
+          <button class="guestbook-fab" id="guestbook-fab" type="button">작성하기</button>
+        </div>
+        <ul class="guestbook-list" id="guestbook-list" aria-live="polite"></ul>
+        <div class="guestbook-pagination" id="guestbook-pagination" aria-label="방명록 페이지"></div>
+      </section>
+
       <section class="section contact reveal">
         <h2>WITH OUR WHOLE HEART,</h2>
         <p class="contact-copy">
@@ -285,6 +292,39 @@
         </p>
       </section>
     </main>
+
+    <div class="gallery-modal" id="gallery-modal" hidden aria-modal="true" role="dialog">
+      <button class="gallery-modal-close" id="gallery-modal-close" type="button" aria-label="닫기">
+        ×
+      </button>
+      <button class="gallery-modal-nav gallery-modal-prev" id="gallery-modal-prev" type="button" aria-label="이전 사진">
+        ‹
+      </button>
+      <img class="gallery-modal-image" id="gallery-modal-image" alt="갤러리 확대 이미지" />
+      <button class="gallery-modal-nav gallery-modal-next" id="gallery-modal-next" type="button" aria-label="다음 사진">
+        ›
+      </button>
+    </div>
+
+    <div class="guestbook-modal" id="guestbook-modal" hidden aria-modal="true" role="dialog">
+      <div class="guestbook-modal-card">
+        <button class="guestbook-modal-close" id="guestbook-modal-close" type="button" aria-label="닫기">
+          ×
+        </button>
+        <h3 class="guestbook-modal-title">방명록 작성</h3>
+        <form class="guestbook-form" id="guestbook-form">
+          <input id="guestbook-name" type="text" maxlength="12" placeholder="이름" required />
+          <textarea
+            id="guestbook-message"
+            maxlength="120"
+            rows="4"
+            placeholder="두 사람에게 따뜻한 한마디를 남겨주세요."
+            required
+          ></textarea>
+          <button type="submit">등록하기</button>
+        </form>
+      </div>
+    </div>
 
     <div class="toast" id="toast">복사되었습니다.</div>
     <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=hu9lx6ehw2" defer></script>
