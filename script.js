@@ -119,12 +119,6 @@ function initNaverMap() {
     zoom: 17,
   });
 
-  const marker = new window.naver.maps.Marker({
-    position: fallbackCenter,
-    map,
-    title: "더헤윰 웨딩홀",
-  });
-
   const query = "전라남도 순천시 순천만길 71";
   const geocoder = window.naver.maps.Service;
   if (!geocoder || typeof geocoder.geocode !== "function") return;
@@ -140,7 +134,6 @@ function initNaverMap() {
 
     const position = new window.naver.maps.LatLng(lat, lng);
     map.setCenter(position);
-    marker.setPosition(position);
   });
 }
 
