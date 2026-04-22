@@ -104,9 +104,9 @@ document.querySelectorAll(".account-toggle").forEach((toggle) => {
   });
 });
 
-/** 더헤윰 웨딩홀 (전남 순천시 순천만길 71 / 오천동 일대) — 네이버 지도 검색 결과와 맞춘 WGS84 */
-const HEYUM_WEDDING_LAT = 34.919585;
-const HEYUM_WEDDING_LNG = 127.497563;
+/** 더헤윰 웨딩홀 (전남 순천시 순천만길 71) 고정 좌표 */
+const HEYUM_WEDDING_LAT = 34.920120;
+const HEYUM_WEDDING_LNG = 127.497730;
 
 function initNaverMap() {
   const mapElement = document.getElementById("naver-map");
@@ -117,23 +117,6 @@ function initNaverMap() {
   const map = new window.naver.maps.Map(mapElement, {
     center: fallbackCenter,
     zoom: 17,
-  });
-
-  const query = "더헤윰웨딩컨벤션 전라남도 순천시 오천동 389";
-  const geocoder = window.naver.maps.Service;
-  if (!geocoder || typeof geocoder.geocode !== "function") return;
-
-  geocoder.geocode({ query }, (status, response) => {
-    if (status !== window.naver.maps.Service.Status.OK) return;
-    const first = response?.v2?.addresses?.[0];
-    if (!first) return;
-
-    const lat = Number(first.y);
-    const lng = Number(first.x);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-
-    const position = new window.naver.maps.LatLng(lat, lng);
-    map.setCenter(position);
   });
 }
 
