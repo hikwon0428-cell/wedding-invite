@@ -105,8 +105,8 @@ document.querySelectorAll(".account-toggle").forEach((toggle) => {
 });
 
 /** 더헤윰 웨딩홀 (전남 순천시 순천만길 71) 고정 좌표 */
-const HEYUM_WEDDING_LAT = 34.920120;
-const HEYUM_WEDDING_LNG = 127.497730;
+const HEYUM_WEDDING_LAT = 34.922515;
+const HEYUM_WEDDING_LNG = 127.496668;
 
 function initNaverMap() {
   const mapElement = document.getElementById("naver-map");
@@ -117,6 +117,12 @@ function initNaverMap() {
   const map = new window.naver.maps.Map(mapElement, {
     center: fallbackCenter,
     zoom: 17,
+  });
+
+  new window.naver.maps.Marker({
+    position: fallbackCenter,
+    map,
+    title: "더헤윰 웨딩홀",
   });
 }
 
