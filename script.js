@@ -303,6 +303,9 @@ function initGuestbook() {
   if (!form || !nameInput || !messageInput || !list || !pagination || !fab || !modal || !modalClose) return;
 
   const storageKey = "wedding_guestbook_entries_v1";
+  const pageSize = 6;
+  let currentPage = 1;
+  let entries = [];
 
   function readEntries() {
     try {
@@ -328,18 +331,15 @@ function initGuestbook() {
     return `${y}.${m}.${d}`;
   }
 
-  const pageSize = 6;
-  let currentPage = 1;
-
-  function render(entries) {
+  function render(items) {
     list.innerHTML = "";
     pagination.innerHTML = "";
-    if (entries.length === 0) return;
+    if (items.length === 0) return;
 
-    const totalPages = Math.max(1, Math.ceil(entries.length / pageSize));
+    const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
     currentPage = Math.min(Math.max(1, currentPage), totalPages);
     const start = (currentPage - 1) * pageSize;
-    const visibleEntries = entries.slice(start, start + pageSize);
+    const visibleEntries = items.slice(start, start + pageSize);
 
     visibleEntries.forEach((entry) => {
       const item = document.createElement("li");
@@ -384,7 +384,28 @@ function initGuestbook() {
     }
   }
 
-  let entries = readEntries();
+  function hasFirebaseConfig(config) {
+    if (!config || typeof config !== "object") return false;
+    const requiredKeys = ["apiKey", "authDomain", "projectId", "appId"];
+    return requiredKeys.every((key) => typeof config[key] === "string" && config[key].trim().length > 0);
+  }
+
+  function initRemoteGuestbook() {
+    if (!window.firebase) return null;
+    const config = window.WEDDING_FIREBASE_CONFIG;
+    if (!hasFirebaseConfig(config)) return null;
+
+    const app = window.firebase.apps.length
+      ? window.firebase.app()
+      : window.firebase.initializeApp(config);
+    const db = app.firestore();
+    const collectionRef = db.collection("guestbookEntries");
+    return collectionRef;
+  }
+
+  const remoteCollection = initRemoteGuestbook();
+
+  entries = readEntries();
   render(entries);
 
   function openModal() {
@@ -404,7 +425,30 @@ function initGuestbook() {
     if (event.target === modal) closeModal();
   });
 
-  form.addEventListener("submit", (event) => {
+  function applyEntries(nextEntries) {
+    entries = nextEntries;
+    render(entries);
+  }
+
+  if (remoteCollection) {
+    remoteCollection
+      .orderBy("createdAt", "desc")
+      .limit(50)
+      .onSnapshot((snapshot) => {
+        const remoteEntries = snapshot.docs.map((doc) => {
+          const data = doc.data() || {};
+          const timestamp = data.createdAt?.toDate?.();
+          return {
+            name: String(data.name || "").slice(0, 12),
+            message: String(data.message || "").slice(0, 120),
+            createdAt: timestamp ? timestamp.toISOString() : new Date().toISOString(),
+          };
+        });
+        applyEntries(remoteEntries);
+      });
+  }
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const name = nameInput.value.trim();
     const message = messageInput.value.trim();
@@ -416,10 +460,25 @@ function initGuestbook() {
       createdAt: new Date().toISOString(),
     };
 
-    entries = [entry, ...entries].slice(0, 30);
     currentPage = 1;
-    saveEntries(entries);
-    render(entries);
+
+    if (remoteCollection) {
+      try {
+        await remoteCollection.add({
+          name: entry.name,
+          message: entry.message,
+          createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      } catch (_error) {
+        showToast("등록에 실패했습니다.");
+        return;
+      }
+    } else {
+      entries = [entry, ...entries].slice(0, 30);
+      saveEntries(entries);
+      render(entries);
+    }
+
     form.reset();
     closeModal();
     showToast("방명록이 등록되었습니다.");
