@@ -67,7 +67,8 @@ body.intro-lock {
   position: relative;
   z-index: 1;
   text-align: center;
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   padding: 56px 24px 72px;
   display: flex;
   flex-direction: column;
@@ -78,15 +79,18 @@ body.intro-lock {
   position: fixed;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
   width: min(100%, 460px);
-  height: 100dvh;
+  height: 100vh;
+  height: 100svh;
   z-index: 0;
   pointer-events: none;
   background: #2a2827 url("./images/KakaoTalk_20260407_153823551.jpg") center / cover no-repeat;
   opacity: 1;
   transition: opacity 0.45s ease, visibility 0.45s ease;
   visibility: visible;
+  transform: translate3d(-50%, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .hero-bg-fixed::after {

@@ -170,6 +170,7 @@ function initHeroFixedBackground() {
   const bg = document.getElementById("hero-bg-fixed");
   if (!hero || !bg) return;
 
+  let scrollRaf = 0;
   const update = () => {
     const rect = hero.getBoundingClientRect();
     if (rect.bottom <= 1) {
@@ -179,8 +180,16 @@ function initHeroFixedBackground() {
     }
   };
 
+  const scheduleUpdate = () => {
+    if (scrollRaf) return;
+    scrollRaf = requestAnimationFrame(() => {
+      scrollRaf = 0;
+      update();
+    });
+  };
+
   update();
-  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("scroll", scheduleUpdate, { passive: true });
   window.addEventListener("resize", update);
 }
 
