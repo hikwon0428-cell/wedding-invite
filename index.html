@@ -2,7 +2,10 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>모바일 청첩장 | 첫 버전</title>
     <meta
       name="description"
@@ -17,7 +20,6 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <canvas id="petal-canvas" aria-hidden="true"></canvas>
     <main class="invite">
       <section class="section intro-cover">
         <div class="intro-cover__panel">
@@ -35,24 +37,48 @@
               <span class="intro-word intro-word-final">결혼합니다.</span>
             </span>
           </p>
-          <p class="intro-bottom-text">
-            2026. 08. 22 SAT 1:00 PM<br />
-            THE HEYUM
-          </p>
+          <div class="intro-cover-bottom">
+            <p class="intro-bottom-text">
+              2026. 08. 22 SAT 1:00 PM<br />
+              THE HEYUM
+            </p>
+            <div class="intro-cover-art">
+              <img
+                src="./images/invitation_2.png"
+                alt=""
+                width="100"
+                height="100"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
         </div>
       </section>
-      <section class="hero section">
+      <section class="hero section" id="hero-section">
+        <div class="hero-bg-fixed" id="hero-bg-fixed" aria-hidden="true"></div>
         <p class="eyebrow reveal">WEDDING INVITATION</p>
-        <div class="hero-photo reveal">
-          <img src="./images/KakaoTalk_20260407_153823551.jpg" alt="메인사진" />
+        <div class="hero-inner">
+          <div class="hero-lower">
+            <h1 class="names reveal intro-lift-target">JINWOO<br />&amp; HYEIN</h1>
+            <p class="date reveal intro-lift-target">2026. 08. 22 SAT 1:00 PM</p>
+            <p class="location reveal intro-lift-target">THE HEYUM</p>
+          </div>
         </div>
-        <h1 class="names reveal intro-lift-target">JINWOO<br />&amp; HYEIN</h1>
-        <p class="date reveal intro-lift-target">2026. 08. 22 SAT 13:00 PM</p>
-        <p class="location reveal intro-lift-target">더헤윰 웨딩홀</p>
       </section>
 
-      <section class="section countdown-wrap reveal">
+      <section class="section countdown-wrap">
         <div class="invite-intro">
+          <div class="invite-intro-art">
+            <img
+              src="./images/invitation_1.png"
+              alt=""
+              width="100"
+              height="100"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           <p class="invite-greeting">
             새로운 출발을 함께 축복해 주시면<br />
             소중한 마음 오래 간직하겠습니다.
@@ -68,6 +94,13 @@
             </p>
           </div>
         </div>
+        <section class="info reveal">
+          <ul>
+            <li><strong>일시</strong><span>2026년 08월 22일 토요일 오후 1시</span></li>
+            <li><strong>주소</strong><span>전라남도 순천시 순천만길 71</span></li>
+            <li><strong>장소</strong><span>더헤윰 웨딩홀</span></li>
+          </ul>
+        </section>
         <div class="countdown-thumbs" aria-hidden="true">
           <figure class="countdown-thumb">
             <img
@@ -88,48 +121,43 @@
             />
           </figure>
         </div>
-        <section class="info reveal">
-          <ul>
-            <li><strong>일시</strong><span>2026년 08월 22일 토요일 오후 1시</span></li>
-            <li><strong>장소</strong><span>더헤윰 웨딩홀</span></li>
-            <li><strong>주소</strong><span>전라남도 순천시 순천만길 71</span></li>
-          </ul>
-        </section>
-        <div class="wedding-cal reveal" aria-label="2026년 8월 달력">
-          <div class="wedding-cal__month-num" aria-hidden="true">8</div>
-          <div class="wedding-cal__weekdays" role="row">
-            <span>SUN</span>
-            <span>MON</span>
-            <span>TUE</span>
-            <span>WED</span>
-            <span>THU</span>
-            <span>FRI</span>
-            <span>SAT</span>
+        <div class="countdown-white-block">
+          <div class="wedding-cal reveal" aria-label="2026년 8월 달력">
+            <div class="wedding-cal__month-num" aria-hidden="true">8</div>
+            <div class="wedding-cal__weekdays" role="row">
+              <span>SUN</span>
+              <span>MON</span>
+              <span>TUE</span>
+              <span>WED</span>
+              <span>THU</span>
+              <span>FRI</span>
+              <span>SAT</span>
+            </div>
+            <div class="wedding-cal__grid" role="grid">
+              <span class="wedding-cal__cell">9</span>
+              <span class="wedding-cal__cell">10</span>
+              <span class="wedding-cal__cell">11</span>
+              <span class="wedding-cal__cell">12</span>
+              <span class="wedding-cal__cell">13</span>
+              <span class="wedding-cal__cell">14</span>
+              <span class="wedding-cal__cell">15</span>
+              <span class="wedding-cal__cell">16</span>
+              <span class="wedding-cal__cell">17</span>
+              <span class="wedding-cal__cell">18</span>
+              <span class="wedding-cal__cell">19</span>
+              <span class="wedding-cal__cell">20</span>
+              <span class="wedding-cal__cell">21</span>
+              <span class="wedding-cal__cell wedding-cal__cell--wedding">22</span>
+            </div>
           </div>
-          <div class="wedding-cal__grid" role="grid">
-            <span class="wedding-cal__cell">9</span>
-            <span class="wedding-cal__cell">10</span>
-            <span class="wedding-cal__cell">11</span>
-            <span class="wedding-cal__cell">12</span>
-            <span class="wedding-cal__cell">13</span>
-            <span class="wedding-cal__cell">14</span>
-            <span class="wedding-cal__cell">15</span>
-            <span class="wedding-cal__cell">16</span>
-            <span class="wedding-cal__cell">17</span>
-            <span class="wedding-cal__cell">18</span>
-            <span class="wedding-cal__cell">19</span>
-            <span class="wedding-cal__cell">20</span>
-            <span class="wedding-cal__cell">21</span>
-            <span class="wedding-cal__cell wedding-cal__cell--wedding">22</span>
+          <div class="countdown reveal" id="countdown">
+            <div><span id="days">0</span><small>DAYS</small></div>
+            <div><span id="hours">0</span><small>HOURS</small></div>
+            <div><span id="minutes">0</span><small>MIN</small></div>
+            <div><span id="seconds">0</span><small>SEC</small></div>
           </div>
+          <p class="countdown-subtitle reveal">DAYS UNTIL THE WEDDING</p>
         </div>
-        <div class="countdown reveal" id="countdown">
-          <div><span id="days">0</span><small>DAYS</small></div>
-          <div><span id="hours">0</span><small>HOURS</small></div>
-          <div><span id="minutes">0</span><small>MIN</small></div>
-          <div><span id="seconds">0</span><small>SEC</small></div>
-        </div>
-        <p class="countdown-subtitle reveal">DAYS UNTIL THE WEDDING</p>
       </section>
 
       <section class="section gallery reveal">
@@ -148,7 +176,7 @@
           <div class="account-head">
             <p>신랑측</p>
             <button class="account-toggle" type="button" aria-expanded="false">
-              ...
+              ···
             </button>
           </div>
           <div class="account-list" hidden>
@@ -185,7 +213,7 @@
           <div class="account-head">
             <p>신부측</p>
             <button class="account-toggle" type="button" aria-expanded="false">
-              ...
+              ···
             </button>
           </div>
           <div class="account-list" hidden>
@@ -266,27 +294,27 @@
         </div>
       </section>
 
-      <section class="section guestbook reveal">
-        <h2 class="section-title-en">Guestbook</h2>
-        <p class="guestbook-help">축하 메시지를 남겨주세요.</p>
-        <div class="guestbook-actions">
+      <section class="section guestbook">
+        <h2 class="section-title-en reveal">Guestbook</h2>
+        <p class="guestbook-help reveal">신랑 신부에게 축하 메시지를 남겨주세요.</p>
+        <div class="guestbook-actions reveal">
           <button class="guestbook-fab" id="guestbook-fab" type="button">작성하기</button>
         </div>
-        <ul class="guestbook-list" id="guestbook-list" aria-live="polite"></ul>
-        <div class="guestbook-pagination" id="guestbook-pagination" aria-label="방명록 페이지"></div>
+        <ul class="guestbook-list reveal" id="guestbook-list" aria-live="polite"></ul>
+        <div class="guestbook-pagination reveal" id="guestbook-pagination" aria-label="방명록 페이지"></div>
       </section>
 
-      <section class="section contact reveal">
-        <h2>WITH OUR WHOLE HEART,</h2>
-        <p class="contact-copy">
+      <section class="section contact">
+        <h2 class="reveal">WITH OUR WHOLE HEART,</h2>
+        <p class="contact-copy reveal">
           귀한 발걸음 하시는 모든 분의 가정에<br />
           행복이 가득하시길 진심으로 기원합니다.
         </p>
-        <div class="contact-links">
+        <div class="contact-links reveal">
           <a href="tel:01087000619">신랑에게 연락하기</a>
           <a href="tel:01094368203">신부에게 연락하기</a>
         </div>
-        <p class="contact-copy contact-copy--bottom">
+        <p class="contact-copy contact-copy--bottom reveal">
           소중한 분들과 함께할 이 날을<br />
           마음 깊이 기다리고 있겠습니다.
         </p>
@@ -326,11 +354,41 @@
       </div>
     </div>
 
+    <div
+      class="guestbook-thank-modal"
+      id="guestbook-thank-modal"
+      hidden
+      aria-modal="true"
+      role="dialog"
+      aria-label="감사 인사"
+    >
+      <div class="guestbook-thank-card">
+        <button class="guestbook-thank-close" id="guestbook-thank-close" type="button" aria-label="닫기">
+          ×
+        </button>
+        <div class="guestbook-thank-heading">
+          <img
+            class="guestbook-thank-deco"
+            src="./images/invitation_3.png"
+            alt=""
+            width="96"
+            height="96"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <p class="guestbook-thank-message">
+          보내주신 축복의 말씀<br />
+          소중히 간직하겠습니다 ❤
+        </p>
+      </div>
+    </div>
+
     <div class="toast" id="toast">복사되었습니다.</div>
     <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=hu9lx6ehw2" defer></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js" defer></script>
     <script src="./firebase-config.js" defer></script>
-    <script src="./script.js?v=20260422-2" defer></script>
+    <script src="./script.js?v=20260423-2" defer></script>
   </body>
 </html>

@@ -78,10 +78,15 @@ document.querySelectorAll(".copy-btn").forEach((button) => {
 
 document.querySelectorAll(".account-card .account-list").forEach((list) => {
   list.setAttribute("hidden", "");
+  list.classList.remove("is-open");
+  list.setAttribute("aria-hidden", "true");
 });
 
+const ACCOUNT_TOGGLE_CLOSED = "···";
+const ACCOUNT_TOGGLE_OPEN = "×";
+
 document.querySelectorAll(".account-toggle").forEach((toggle) => {
-  toggle.textContent = "...";
+  toggle.textContent = ACCOUNT_TOGGLE_CLOSED;
   toggle.setAttribute("aria-expanded", "false");
 
   toggle.addEventListener("click", () => {
@@ -94,12 +99,28 @@ document.querySelectorAll(".account-toggle").forEach((toggle) => {
     const shouldOpen = targetList.hasAttribute("hidden");
     if (shouldOpen) {
       targetList.removeAttribute("hidden");
+      // Force layout once so opening transition starts reliably from collapsed state.
+      void targetList.offsetHeight;
+      targetList.classList.add("is-open");
+      targetList.setAttribute("aria-hidden", "false");
       toggle.setAttribute("aria-expanded", "true");
-      toggle.textContent = "X";
+      toggle.textContent = ACCOUNT_TOGGLE_OPEN;
     } else {
-      targetList.setAttribute("hidden", "");
+      targetList.classList.remove("is-open");
+      targetList.setAttribute("aria-hidden", "true");
+      const handleTransitionEnd = (event) => {
+        if (event.propertyName !== "max-height") return;
+        targetList.setAttribute("hidden", "");
+        targetList.removeEventListener("transitionend", handleTransitionEnd);
+      };
+      targetList.addEventListener("transitionend", handleTransitionEnd);
+      window.setTimeout(() => {
+        if (!targetList.classList.contains("is-open")) {
+          targetList.setAttribute("hidden", "");
+        }
+      }, 420);
       toggle.setAttribute("aria-expanded", "false");
-      toggle.textContent = "...";
+      toggle.textContent = ACCOUNT_TOGGLE_CLOSED;
     }
   });
 });
@@ -142,6 +163,25 @@ function initNaverMap() {
     },
     zIndex: 1000,
   });
+}
+
+function initHeroFixedBackground() {
+  const hero = document.getElementById("hero-section");
+  const bg = document.getElementById("hero-bg-fixed");
+  if (!hero || !bg) return;
+
+  const update = () => {
+    const rect = hero.getBoundingClientRect();
+    if (rect.bottom <= 1) {
+      bg.classList.add("is-past");
+    } else {
+      bg.classList.remove("is-past");
+    }
+  };
+
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
 }
 
 function initIntroSequence() {
@@ -300,7 +340,22 @@ function initGuestbook() {
   const fab = document.getElementById("guestbook-fab");
   const modal = document.getElementById("guestbook-modal");
   const modalClose = document.getElementById("guestbook-modal-close");
-  if (!form || !nameInput || !messageInput || !list || !pagination || !fab || !modal || !modalClose) return;
+  const thankModal = document.getElementById("guestbook-thank-modal");
+  const thankClose = document.getElementById("guestbook-thank-close");
+  if (
+    !form ||
+    !nameInput ||
+    !messageInput ||
+    !list ||
+    !pagination ||
+    !fab ||
+    !modal ||
+    !modalClose ||
+    !thankModal ||
+    !thankClose
+  ) {
+    return;
+  }
 
   const storageKey = "wedding_guestbook_entries_v1";
   const pageSize = 6;
@@ -419,10 +474,31 @@ function initGuestbook() {
     document.body.classList.remove("guestbook-modal-open");
   }
 
+  function openThankModal() {
+    thankModal.hidden = false;
+    document.body.classList.add("guestbook-thank-open");
+    thankClose.focus();
+  }
+
+  function closeThankModal() {
+    thankModal.hidden = true;
+    document.body.classList.remove("guestbook-thank-open");
+  }
+
   fab.addEventListener("click", openModal);
   modalClose.addEventListener("click", closeModal);
   modal.addEventListener("click", (event) => {
     if (event.target === modal) closeModal();
+  });
+
+  thankClose.addEventListener("click", closeThankModal);
+  thankModal.addEventListener("click", (event) => {
+    if (event.target === thankModal) closeThankModal();
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (thankModal.hidden) return;
+    if (event.key === "Escape") closeThankModal();
   });
 
   function applyEntries(nextEntries) {
@@ -481,8 +557,78 @@ function initGuestbook() {
 
     form.reset();
     closeModal();
-    showToast("방명록이 등록되었습니다.");
+    openThankModal();
   });
+}
+
+function initSmoothWheelScroll() {
+  const isFinePointer = window.matchMedia("(pointer: fine)").matches;
+  if (!isFinePointer) return;
+
+  let currentY = window.scrollY;
+  let targetY = window.scrollY;
+  let rafId = 0;
+
+  function maxScrollY() {
+    return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  }
+
+  function startLoop() {
+    if (rafId) return;
+    const tick = () => {
+      const delta = targetY - currentY;
+      // Immediate response + gentle inertia tail (no initial "bounce")
+      currentY += delta * 0.14;
+      if (Math.abs(delta) < 0.4) {
+        currentY = targetY;
+      }
+      window.scrollTo(0, currentY);
+
+      if (currentY !== targetY) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        rafId = 0;
+      }
+    };
+    rafId = requestAnimationFrame(tick);
+  }
+
+  window.addEventListener(
+    "wheel",
+    (event) => {
+      // Let native scrolling work in text inputs / map / modals.
+      const el = event.target;
+      if (!(el instanceof Element)) return;
+      if (
+        el.closest(
+          "input, textarea, [contenteditable='true'], #naver-map, .gallery-modal, .guestbook-modal, .guestbook-thank-modal"
+        )
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const base = Math.abs(event.deltaY);
+      const step = Math.sign(event.deltaY) * Math.min(300, Math.max(55, base * 0.72));
+      // Sync with actual position to avoid jump/twitch.
+      currentY = window.scrollY;
+      targetY = Math.min(maxScrollY(), Math.max(0, targetY + step));
+      startLoop();
+    },
+    { passive: false }
+  );
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!rafId) {
+        currentY = window.scrollY;
+        targetY = window.scrollY;
+      }
+    },
+    { passive: true }
+  );
 }
 
 updateCountdown();
@@ -490,8 +636,10 @@ setInterval(updateCountdown, 1000);
 
 window.addEventListener("load", initNaverMap);
 window.addEventListener("load", initIntroSequence);
+window.addEventListener("load", initHeroFixedBackground);
 window.addEventListener("load", initGallery);
 window.addEventListener("load", initGuestbook);
+window.addEventListener("load", initSmoothWheelScroll);
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const revealSections = document.querySelectorAll(".reveal");
@@ -546,152 +694,3 @@ if (revealSections.length > 0) {
   }
 }
 
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const petalCanvas = document.getElementById("petal-canvas");
-
-if (petalCanvas && !prefersReducedMotion) {
-  const ctx = petalCanvas.getContext("2d");
-  const petals = [];
-  const PETAL_COUNT = 28;
-  const petalImage = new Image();
-  let petalImageLoaded = false;
-  const isMobileViewport = window.matchMedia("(max-width: 768px)").matches;
-  const PETAL_COLORS = [
-    [255, 255, 255], // white
-    [248, 242, 255], // very light lavender
-    [235, 222, 252], // light purple
-  ];
-  let width = 0;
-  let height = 0;
-  let animationId = 0;
-
-  function randomRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  petalImage.src = "./images/KakaoTalk_20260407_153823551-removebg-preview.png";
-  petalImage.onload = () => {
-    petalImageLoaded = true;
-  };
-  petalImage.onerror = () => {
-    petalImageLoaded = false;
-  };
-
-  function resizeCanvas() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    const dpr = window.devicePixelRatio || 1;
-    petalCanvas.width = Math.floor(width * dpr);
-    petalCanvas.height = Math.floor(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function createPetal(initial = false) {
-    return {
-      x: randomRange(0, width),
-      y: initial ? randomRange(0, height) : randomRange(-80, -20),
-      size: randomRange(14, 24),
-      speedY: randomRange(0.45, 1.1),
-      speedX: randomRange(-0.3, 0.3),
-      swing: randomRange(0.4, 1.4),
-      swingSpeed: randomRange(0.006, 0.02),
-      angle: randomRange(0, Math.PI * 2),
-      rotation: randomRange(0, Math.PI * 2),
-      rotationSpeed: randomRange(-0.012, 0.012),
-      opacity: isMobileViewport ? randomRange(0.85, 1) : randomRange(0.72, 0.96),
-      color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
-    };
-  }
-
-  function drawPetal(petal) {
-    ctx.save();
-    ctx.translate(petal.x, petal.y);
-    ctx.rotate(petal.rotation);
-    if (petalImageLoaded) {
-      const aspect = petalImage.naturalWidth / petalImage.naturalHeight;
-      const base = petal.size * 2.4;
-      let width = base;
-      let height = base;
-
-      // Keep original image ratio to avoid vertical/horizontal squashing.
-      if (aspect >= 1) {
-        height = base / aspect;
-      } else {
-        width = base * aspect;
-      }
-
-      ctx.globalAlpha = petal.opacity;
-      ctx.filter = isMobileViewport
-        ? "brightness(1.15) contrast(1.12) saturate(1.15)"
-        : "brightness(1.08) contrast(1.05) saturate(1.08)";
-      ctx.shadowColor = "rgba(146, 110, 194, 0.36)";
-      ctx.shadowBlur = isMobileViewport ? 8 : 5;
-      ctx.drawImage(petalImage, -width / 2, -height / 2, width, height);
-      ctx.filter = "none";
-    } else {
-      const [r, g, b] = petal.color;
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${petal.opacity})`;
-      ctx.strokeStyle = "rgba(188, 166, 220, 0.35)";
-      ctx.lineWidth = 1;
-      ctx.shadowColor = "rgba(203, 182, 235, 0.28)";
-      ctx.shadowBlur = 4;
-      ctx.beginPath();
-      // Fallback vector petal when image is unavailable.
-      ctx.moveTo(0, -petal.size);
-      ctx.bezierCurveTo(
-        petal.size * 0.85,
-        -petal.size * 0.5,
-        petal.size * 0.7,
-        petal.size * 0.75,
-        0,
-        petal.size
-      );
-      ctx.bezierCurveTo(
-        -petal.size * 0.7,
-        petal.size * 0.75,
-        -petal.size * 0.85,
-        -petal.size * 0.5,
-        0,
-        -petal.size
-      );
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-
-    petals.forEach((petal, index) => {
-      petal.y += petal.speedY;
-      petal.x += petal.speedX + Math.sin(petal.angle) * petal.swing * 0.2;
-      petal.angle += petal.swingSpeed;
-      petal.rotation += petal.rotationSpeed;
-
-      if (petal.y > height + 20 || petal.x < -40 || petal.x > width + 40) {
-        petals[index] = createPetal(false);
-        return;
-      }
-
-      drawPetal(petal);
-    });
-
-    animationId = requestAnimationFrame(animate);
-  }
-
-  resizeCanvas();
-  for (let i = 0; i < PETAL_COUNT; i += 1) petals.push(createPetal(true));
-  animate();
-
-  window.addEventListener("resize", () => {
-    cancelAnimationFrame(animationId);
-    resizeCanvas();
-    for (let i = 0; i < petals.length; i += 1) {
-      petals[i].x = randomRange(0, width);
-      petals[i].y = randomRange(0, height);
-    }
-    animate();
-  });
-}

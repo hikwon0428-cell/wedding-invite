@@ -16,7 +16,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  background: #383534;
   color: var(--fg);
   font-family: var(--font-en), var(--font-ko);
   font-weight: 300;
@@ -26,6 +26,8 @@ body {
   display: flex;
   justify-content: center;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto;
 }
 
 body.intro-lock {
@@ -33,21 +35,12 @@ body.intro-lock {
   touch-action: none;
 }
 
-#petal-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
 .invite {
   width: 100%;
   max-width: 460px;
   min-height: 100dvh;
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
+  border-left: none;
+  border-right: none;
   position: relative;
   z-index: 2;
   background: transparent;
@@ -60,8 +53,9 @@ body.intro-lock {
 
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 1.05s ease, transform 1.05s ease;
+  transform: translateY(20px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .reveal.is-visible {
@@ -70,9 +64,62 @@ body.intro-lock {
 }
 
 .hero {
+  position: relative;
+  z-index: 1;
   text-align: center;
-  padding-top: 72px;
-  padding-bottom: 72px;
+  min-height: 100dvh;
+  padding: 56px 24px 72px;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+.hero-bg-fixed {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 460px);
+  height: 100dvh;
+  z-index: 0;
+  pointer-events: none;
+  background: #2a2827 url("./images/KakaoTalk_20260407_153823551.jpg") center / cover no-repeat;
+  opacity: 1;
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+  visibility: visible;
+}
+
+.hero-bg-fixed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.38) 0%,
+    rgba(0, 0, 0, 0.12) 40%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+.hero-bg-fixed.is-past {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 0;
+}
+
+.hero-lower {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .eyebrow {
@@ -85,14 +132,14 @@ body.intro-lock {
   color: var(--muted);
 }
 
-.hero-photo {
-  width: min(88vw, 420px);
-  aspect-ratio: 4 / 5;
-  margin: 0 auto 20px;
-  border-radius: 0;
-  overflow: hidden;
-  border: 1px solid #ececec;
-  background: linear-gradient(180deg, #fafafa 0%, #f3f3f3 100%);
+.hero > .eyebrow {
+  position: sticky;
+  top: 28px;
+  align-self: center;
+  z-index: 6;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  transition-delay: 0.04s;
 }
 
 .intro-cover {
@@ -120,6 +167,29 @@ body.intro-lock {
   padding: 64px 24px 56px;
   border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
+}
+
+/* 첫 화면 고정 사진 위로 이후 섹션이 올라오도록 스택 정리 */
+.invite > .section:not(.hero):not(.intro-cover) {
+  position: relative;
+  z-index: 3;
+}
+
+.countdown-wrap {
+  background: #ffffff;
+  padding-top: 288px;
+  position: relative;
+  z-index: 4;
+}
+
+.countdown-white-block {
+  background: #ffffff;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 264px;
+  padding-bottom: 28px;
 }
 
 .intro-top-text {
@@ -192,6 +262,13 @@ body.intro-lock {
   font-size: 18px;
 }
 
+.intro-cover-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .intro-bottom-text {
   margin: 0;
   font-family: var(--font-en);
@@ -203,11 +280,17 @@ body.intro-lock {
   line-height: 1.6;
 }
 
-.hero-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.intro-cover-art {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.intro-cover-art img {
   display: block;
+  width: min(26vw, 100px);
+  max-width: 100%;
+  height: auto;
 }
 
 .names {
@@ -218,6 +301,12 @@ body.intro-lock {
   line-height: 1.08;
   letter-spacing: 0.03em;
   text-transform: uppercase;
+  color: #111111;
+}
+
+.hero .names {
+  color: #ffffff;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
 }
 
 .date,
@@ -225,6 +314,12 @@ body.intro-lock {
   margin: 12px 0 0;
   font-size: 14px;
   color: #2e2e2e;
+}
+
+.hero .date,
+.hero .location {
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
 }
 
 .date {
@@ -238,14 +333,6 @@ body.intro-lock {
   font-family: var(--font-ko);
   font-weight: 400;
   letter-spacing: 0.02em;
-}
-
-.hero .eyebrow {
-  transition-delay: 0.04s;
-}
-
-.hero .hero-photo {
-  transition-delay: 0.12s;
 }
 
 .hero .names {
@@ -278,6 +365,19 @@ h2 {
 .invite-intro {
   text-align: center;
   margin-bottom: 28px;
+}
+
+.invite-intro-art {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.invite-intro-art img {
+  display: block;
+  width: min(26vw, 100px);
+  max-width: 100%;
+  height: auto;
 }
 
 .invite-greeting {
@@ -386,7 +486,7 @@ h2 {
 
 .wedding-cal {
   max-width: 320px;
-  margin: 0 auto 164px;
+  margin: 0 auto 328px;
   padding: 0 4px 4px;
   background: transparent;
   border: none;
@@ -487,7 +587,7 @@ h2 {
 }
 
 .countdown-subtitle {
-  margin: 0 0 160px;
+  margin: 0 0 320px;
   text-align: center;
   font-family: var(--font-en);
   font-size: 13px;
@@ -517,21 +617,78 @@ h2 {
 }
 
 .countdown-wrap .info {
+  margin-bottom: 18px;
+}
+
+.countdown-wrap .countdown-thumbs {
   margin-bottom: 320px;
 }
 
 .section.gallery {
   margin-top: 160px;
+  background: transparent;
 }
 
 .section.account,
-.section.map,
-.section.contact {
+.section.map {
   margin-top: 320px;
+  background: transparent;
 }
 
 .section.guestbook {
   margin-top: 320px;
+  background: #ffffff;
+  padding-top: 306px;
+  padding-bottom: 68px;
+}
+
+.section.contact {
+  margin-top: 0;
+  background: #ffffff;
+  padding-top: 388px;
+  padding-bottom: 204px;
+}
+
+/* Light text on transparent sections (dark page background) */
+.section.gallery,
+.section.account,
+.section.map {
+  color: #f2f2f2;
+}
+
+.section.account .account-help,
+.section.account .account-card p,
+.section.account .account-owner,
+.section.account .account-number,
+.section.map .map-subtitle-ko,
+.section.map .directions-item,
+.section.map .map-note {
+  color: #ffffff;
+}
+
+.section.account .account-card {
+  border-top-color: rgba(255, 255, 255, 0.85);
+}
+
+.section.account .account-item {
+  border-bottom-color: rgba(255, 255, 255, 0.75);
+}
+
+.section.map .directions-list {
+  border-top-color: rgba(255, 255, 255, 0.85);
+}
+
+.section.map .directions-item {
+  border-bottom-color: rgba(255, 255, 255, 0.75);
+}
+
+@media (max-width: 360px) {
+  .countdown-white-block {
+    margin-left: -18px;
+    margin-right: -18px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
 }
 
 .info strong {
@@ -767,27 +924,46 @@ body.gallery-modal-open {
 .account-toggle {
   width: auto;
   min-width: 34px;
-  padding: 4px 0;
+  height: 24px;
+  padding: 0;
   border: none;
   border-radius: 0;
   background: transparent;
-  color: #111111;
-  font-family: var(--font-ko);
-  font-size: 18px;
-  font-weight: 500;
+  color: #ffffff;
+  font-family: var(--font-en);
+  font-size: 15px;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.08em;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.account-toggle[aria-expanded="true"] {
+  font-size: 14px;
+  letter-spacing: 0;
 }
 
 .account-list {
   margin-top: 12px;
   display: grid;
   gap: 8px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+}
+
+.account-list.is-open {
+  max-height: 420px;
+  opacity: 1;
 }
 
 .account-list[hidden] {
-  display: none !important;
+  display: grid !important;
 }
 
 .account-item {
@@ -1070,8 +1246,87 @@ button,
   padding: 0;
 }
 
-body.guestbook-modal-open {
+body.guestbook-modal-open,
+body.guestbook-thank-open {
   overflow: hidden;
+}
+
+.guestbook-thank-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 115;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.guestbook-thank-modal[hidden] {
+  display: none;
+}
+
+.guestbook-thank-card {
+  position: relative;
+  width: min(100%, 300px);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 40px 20px 24px;
+  text-align: center;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.guestbook-thank-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: auto;
+  min-width: 36px;
+  min-height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #555555;
+  font-size: 26px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guestbook-thank-close:hover {
+  color: #111111;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.guestbook-thank-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0;
+}
+
+.guestbook-thank-deco {
+  display: block;
+  width: min(30vw, 96px);
+  height: auto;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.guestbook-thank-message {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-ko);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  color: #3a3a3a;
 }
 
 .contact-copy--bottom {
@@ -1110,8 +1365,8 @@ body.guestbook-modal-open {
 }
 
 .map-preview {
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   background: #f8f8f8;
   aspect-ratio: 4 / 3;
