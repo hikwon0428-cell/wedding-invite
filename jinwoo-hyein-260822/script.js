@@ -647,7 +647,7 @@ function initKakaoShareButton() {
   const shareUrl = window.location.href;
   const imageUrl = new URL("./images/og-share-1200x630.jpg", shareUrl).href;
   const appKey = "e00da8de3678ba5eb6930824151e418e";
-  const templateId = 1442810;
+  const templateId = 132617;
 
   shareButton.addEventListener("click", async (event) => {
     event.preventDefault();
