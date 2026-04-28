@@ -640,6 +640,69 @@ function initSmoothWheelScroll() {
   );
 }
 
+function initKakaoShareButton() {
+  const shareButton = document.getElementById("kakao-share-btn");
+  if (!shareButton) return;
+
+  const shareUrl = window.location.href;
+  const imageUrl = new URL("./images/og-share-1200x630.jpg", shareUrl).href;
+  const appKey = "e00da8de3678ba5eb6930824151e418e";
+
+  shareButton.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const kakao = window.Kakao;
+    if (!kakao) {
+      await copyText(shareUrl);
+      showToast("카카오 SDK를 찾지 못해 링크를 복사했어요.");
+      return;
+    }
+
+    try {
+      if (!kakao.isInitialized()) {
+        kakao.init(appKey);
+      }
+
+      const payload = {
+        objectType: "feed",
+        content: {
+          title: "진우 · 혜인 결혼합니다",
+          description: "2026. 08. 22 SAT 1:00 PM · THE HEYUM",
+          imageUrl,
+          link: {
+            mobileWebUrl: shareUrl,
+            webUrl: shareUrl,
+          },
+        },
+        buttons: [
+          {
+            title: "청첩장 보러가기",
+            link: {
+              mobileWebUrl: shareUrl,
+              webUrl: shareUrl,
+            },
+          },
+        ],
+      };
+
+      if (kakao.Share && typeof kakao.Share.sendDefault === "function") {
+        kakao.Share.sendDefault(payload);
+        return;
+      }
+      if (kakao.Link && typeof kakao.Link.sendDefault === "function") {
+        kakao.Link.sendDefault(payload);
+        return;
+      }
+
+      await copyText(shareUrl);
+      showToast("공유 기능을 찾지 못해 링크를 복사했어요.");
+    } catch (_error) {
+      await copyText(shareUrl);
+      showToast("공유 중 오류가 있어 링크를 복사했어요.");
+    }
+  });
+}
+
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
@@ -649,6 +712,7 @@ window.addEventListener("load", initHeroFixedBackground);
 window.addEventListener("load", initGallery);
 window.addEventListener("load", initGuestbook);
 window.addEventListener("load", initSmoothWheelScroll);
+window.addEventListener("load", initKakaoShareButton);
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const revealSections = document.querySelectorAll(".reveal");
