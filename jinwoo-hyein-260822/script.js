@@ -647,6 +647,7 @@ function initKakaoShareButton() {
   const shareUrl = window.location.href;
   const imageUrl = new URL("./images/og-share-1200x630.jpg", shareUrl).href;
   const appKey = "e00da8de3678ba5eb6930824151e418e";
+  const templateId = 1442810;
 
   shareButton.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -685,6 +686,16 @@ function initKakaoShareButton() {
         ],
       };
 
+      if (kakao.Share && typeof kakao.Share.sendCustom === "function") {
+        kakao.Share.sendCustom({ templateId });
+        return;
+      }
+      if (kakao.Link && typeof kakao.Link.sendCustom === "function") {
+        kakao.Link.sendCustom({ templateId });
+        return;
+      }
+
+      // Fallback: if custom template API is unavailable, use default feed share.
       if (kakao.Share && typeof kakao.Share.sendDefault === "function") {
         kakao.Share.sendDefault(payload);
         return;
