@@ -642,6 +642,7 @@ h2 {
 }
 
 .countdown-wrap .countdown-thumbs {
+  margin-top: 3.6em;
   margin-bottom: 320px;
 }
 
@@ -1144,7 +1145,7 @@ button,
   font-size: 13px;
   line-height: 1.55;
   font-weight: 400;
-  text-align: center;
+  text-align: left;
 }
 
 .guestbook-help {
@@ -1404,9 +1405,12 @@ body.guestbook-thank-open {
 
 .contact h2 {
   font-family: var(--font-en);
+  font-size: clamp(17px, 4.6vw, 26px);
   font-weight: 300;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  white-space: nowrap;
+  text-align: left;
 }
 
 .map-heading h2 {

@@ -1,6 +1,6 @@
 const targetDate = new Date("2026-08-22T13:00:00+09:00");
 // 같은 파일명으로 사진만 교체했을 때 강력 새로고침 없이 반영되도록 버전을 올립니다.
-const ASSET_VERSION = "20260518";
+const ASSET_VERSION = "20260519";
 
 function assetUrl(path) {
   const separator = path.includes("?") ? "&" : "?";
@@ -178,12 +178,22 @@ function initHeroFixedBackground() {
   if (!hero || !bg) return;
 
   let scrollRaf = 0;
+  const heroImg = bg.querySelector(".hero-bg-fixed__img");
+  const heroSrc = heroImg?.getAttribute("src") ?? "";
+
   const update = () => {
     const rect = hero.getBoundingClientRect();
     if (rect.bottom <= 1) {
       bg.classList.add("is-past");
+      if (heroImg && heroImg.getAttribute("src")) {
+        heroImg.dataset.heroSrc = heroImg.getAttribute("src");
+        heroImg.removeAttribute("src");
+      }
     } else {
       bg.classList.remove("is-past");
+      if (heroImg && !heroImg.getAttribute("src") && (heroImg.dataset.heroSrc || heroSrc)) {
+        heroImg.src = heroImg.dataset.heroSrc || heroSrc;
+      }
     }
   };
 
@@ -257,9 +267,11 @@ function initGallery() {
 
   function createImageElement(source, fallback, alt) {
     const img = document.createElement("img");
-    img.src = source;
+    img.dataset.src = source;
+    img.dataset.fallback = fallback;
     img.alt = alt;
     img.loading = "lazy";
+    img.decoding = "async";
     img.draggable = false;
     img.addEventListener("error", () => {
       if (img.dataset.fallbackApplied === "true") return;
@@ -269,21 +281,61 @@ function initGallery() {
     return img;
   }
 
+  const imageObserver =
+    typeof IntersectionObserver !== "undefined"
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const img = entry.target;
+              if (!(img instanceof HTMLImageElement) || img.src) return;
+              img.src = img.dataset.src ?? "";
+              imageObserver.unobserve(img);
+            });
+          },
+          { rootMargin: "120px 0px" }
+        )
+      : null;
+
+  function loadGalleryImage(img) {
+    if (img.src || !img.dataset.src) return;
+    img.src = img.dataset.src;
+    imageObserver?.unobserve(img);
+  }
+
+  function appendGridItem(image, index) {
+    const itemButton = document.createElement("button");
+    itemButton.type = "button";
+    itemButton.className = "gallery-item";
+    itemButton.setAttribute("aria-label", `갤러리 사진 ${index + 1}`);
+    const img = createImageElement(image.src, image.fallback, `갤러리 사진 ${index + 1}`);
+    itemButton.appendChild(img);
+    itemButton.addEventListener("click", () => openModal(index));
+    grid.appendChild(itemButton);
+    if (imageObserver) {
+      imageObserver.observe(img);
+    } else {
+      loadGalleryImage(img);
+    }
+  }
+
   function renderGrid() {
     const visibleCount = expanded ? images.length : 9;
-    grid.innerHTML = "";
+    const existingCount = grid.children.length;
 
-    images.slice(0, visibleCount).forEach((image, index) => {
-      const itemButton = document.createElement("button");
-      itemButton.type = "button";
-      itemButton.className = "gallery-item";
-      itemButton.setAttribute("aria-label", `갤러리 사진 ${index + 1}`);
-      itemButton.appendChild(
-        createImageElement(image.src, image.fallback, `갤러리 사진 ${index + 1}`)
-      );
-      itemButton.addEventListener("click", () => openModal(index));
-      grid.appendChild(itemButton);
-    });
+    if (existingCount > visibleCount) {
+      while (grid.children.length > visibleCount) {
+        grid.lastElementChild?.remove();
+      }
+    } else if (existingCount < visibleCount) {
+      images.slice(existingCount, visibleCount).forEach((image, offset) => {
+        appendGridItem(image, existingCount + offset);
+      });
+    } else if (existingCount === 0) {
+      images.slice(0, visibleCount).forEach((image, index) => {
+        appendGridItem(image, index);
+      });
+    }
 
     moreButton.setAttribute("aria-expanded", String(expanded));
     moreButton.hidden = images.length <= 9;
