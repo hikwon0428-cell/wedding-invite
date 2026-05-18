@@ -725,8 +725,9 @@ h2 {
 }
 
 .info span {
-  font-size: calc(12px + 1pt);
+  font-size: calc(13px + 1pt);
   font-weight: 300;
+  color: #1f1f1f;
 }
 
 .gallery-grid {
