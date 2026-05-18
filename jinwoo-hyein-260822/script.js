@@ -694,7 +694,6 @@ function initSmoothWheelScroll() {
     { passive: true }
   );
 }
-
 function initKakaoShareButton() {
   const shareButton = document.getElementById("kakao-share-btn");
   if (!shareButton) return;
@@ -708,6 +707,7 @@ function initKakaoShareButton() {
     event.preventDefault();
 
     const kakao = window.Kakao;
+
     if (!kakao) {
       await copyText(shareUrl);
       showToast("카카오 SDK를 찾지 못해 링크를 복사했어요.");
@@ -719,50 +719,24 @@ function initKakaoShareButton() {
         kakao.init(appKey);
       }
 
-      const payload = {
-        objectType: "feed",
-        content: {
-          title: "진우 · 혜인 결혼합니다",
-          description: "2026. 08. 22 SAT 1:00 PM · THE HEYUM",
-          imageUrl,
-          link: {
-            mobileWebUrl: shareUrl,
-            webUrl: shareUrl,
-          },
-        },
-        buttons: [
-          {
-            title: "청첩장 보러가기",
-            link: {
-              mobileWebUrl: shareUrl,
-              webUrl: shareUrl,
-            },
-          },
-        ],
-      };
-
       if (kakao.Share && typeof kakao.Share.sendCustom === "function") {
-        kakao.Share.sendCustom({ templateId });
-        return;
-      }
-      if (kakao.Link && typeof kakao.Link.sendCustom === "function") {
-        kakao.Link.sendCustom({ templateId });
-        return;
-      }
-
-      // Fallback: if custom template API is unavailable, use default feed share.
-      if (kakao.Share && typeof kakao.Share.sendDefault === "function") {
-        kakao.Share.sendDefault(payload);
-        return;
-      }
-      if (kakao.Link && typeof kakao.Link.sendDefault === "function") {
-        kakao.Link.sendDefault(payload);
+        kakao.Share.sendCustom({
+          templateId: templateId,
+          templateArgs: {
+            title: "진우 · 혜인 결혼합니다",
+            description: "2026. 08. 22 SAT 1:00 PM · THE HEYUM",
+            imageUrl: imageUrl,
+            webUrl: shareUrl,
+            mobileWebUrl: shareUrl,
+          },
+        });
         return;
       }
 
       await copyText(shareUrl);
       showToast("공유 기능을 찾지 못해 링크를 복사했어요.");
-    } catch (_error) {
+    } catch (error) {
+      console.error("카카오 공유 오류:", error);
       await copyText(shareUrl);
       showToast("공유 중 오류가 있어 링크를 복사했어요.");
     }
