@@ -1444,7 +1444,7 @@ body.guestbook-thank-open {
 
 @media (max-width: 460px) {
   .contact h2 {
-    font-size: clamp(23px, 6.8vw, 32px);
+    font-size: 21px;
   }
 }
 
