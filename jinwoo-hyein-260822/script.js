@@ -699,7 +699,6 @@ function initKakaoShareButton() {
   if (!shareButton) return;
 
   const shareUrl = window.location.href;
-  const imageUrl = new URL("./images/og-share-1200x630.jpg", shareUrl).href;
   const appKey = "e00da8de3678ba5eb6930824151e418e";
   const templateId = 132617;
 
@@ -720,15 +719,10 @@ function initKakaoShareButton() {
       }
 
       if (kakao.Share && typeof kakao.Share.sendCustom === "function") {
+        // 개발자 콘솔(템플릿 132617)에 저장한 제목·본문·이미지·버튼을 그대로 사용합니다.
+        // templateArgs는 콘솔에 ${KEY} 형태로 열어둔 항목이 있을 때만, 키 이름이 정확히 일치해야 합니다.
         kakao.Share.sendCustom({
-          templateId: templateId,
-          templateArgs: {
-            title: "진우 · 혜인 결혼합니다",
-            description: "2026. 08. 22 SAT 1:00 PM · THE HEYUM",
-            imageUrl: imageUrl,
-            webUrl: shareUrl,
-            mobileWebUrl: shareUrl,
-          },
+          templateId,
         });
         return;
       }
