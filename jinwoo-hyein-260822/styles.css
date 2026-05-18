@@ -1442,6 +1442,12 @@ body.guestbook-thank-open {
   text-align: left;
 }
 
+@media (max-width: 460px) {
+  .contact h2 {
+    font-size: clamp(23px, 6.8vw, 32px);
+  }
+}
+
 .map-heading h2 {
   margin-bottom: 6px;
 }
