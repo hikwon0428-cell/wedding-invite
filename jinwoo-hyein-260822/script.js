@@ -240,13 +240,9 @@ function initGallery() {
     return;
   }
 
-  const fallbackSources = [
-    "./images/KakaoTalk_20260407_153823551.jpg",
-    "./images/KakaoTalk_20260407_153823551-removebg-preview.png",
-  ];
-  const images = Array.from({ length: 24 }, (_value, index) => ({
-    src: `./images/gallery-${String(index + 1).padStart(2, "0")}.jpg`,
-    fallback: fallbackSources[index % fallbackSources.length],
+  const images = Array.from({ length: 21 }, (_value, index) => ({
+    src: `./images/${index + 4}.jpg`,
+    fallback: "./images/1.jpg",
   }));
 
   let expanded = false;

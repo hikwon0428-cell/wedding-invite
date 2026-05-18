@@ -681,6 +681,7 @@ h2 {
 .section.account .account-card p,
 .section.account .account-owner,
 .section.account .account-number,
+.section.account .account-title-line,
 .section.map .map-subtitle-ko,
 .section.map .directions-item,
 .section.map .map-note {
@@ -693,6 +694,10 @@ h2 {
 
 .section.account .account-item {
   border-bottom-color: rgba(255, 255, 255, 0.75);
+}
+
+.section.account .account-depositor {
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .section.map .directions-list {
@@ -936,6 +941,10 @@ body.gallery-modal-open {
   gap: 12px;
 }
 
+.account-card--honju .account-item:last-child {
+  border-bottom: none;
+}
+
 .account-card p {
   margin: 0;
   font-weight: 300;
@@ -1007,9 +1016,37 @@ body.gallery-modal-open {
   font-family: var(--font-ko);
 }
 
+.account-item .account-depositor {
+  font-size: 11px;
+  font-weight: 300;
+  color: #9a9a9a;
+}
+
 .account-meta {
   display: grid;
   gap: 2px;
+}
+
+.account-meta--stacked {
+  gap: 6px;
+}
+
+.account-title-line {
+  font-family: var(--font-ko);
+  font-size: 13px;
+  font-weight: 400;
+  color: #222222;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.account-depositor {
+  font-family: var(--font-ko);
+  font-size: 11px;
+  font-weight: 300;
+  color: #9a9a9a;
+  line-height: 1.35;
+  word-break: keep-all;
 }
 
 .account-owner {
@@ -1352,6 +1389,17 @@ body.guestbook-thank-open {
 
 .contact-copy--bottom {
   margin: 34px 0 0;
+}
+
+.site-credit {
+  margin: 11.25rem 0 0;
+  text-align: center;
+  font-family: var(--font-en);
+  font-size: calc(10px + 3pt);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: #9a9a9a;
 }
 
 .contact h2 {
