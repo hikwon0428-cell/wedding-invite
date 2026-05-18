@@ -1434,7 +1434,7 @@ body.guestbook-thank-open {
 
 .contact h2 {
   font-family: var(--font-en);
-  font-size: clamp(17px, 4.6vw, 26px);
+  font-size: clamp(19px, 5vw, 28px);
   font-weight: 300;
   letter-spacing: 0.04em;
   text-transform: uppercase;
