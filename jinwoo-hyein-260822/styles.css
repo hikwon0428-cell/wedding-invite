@@ -424,7 +424,7 @@ h2 {
   column-gap: 0.4em;
   row-gap: 0.15em;
   font-family: var(--font-ko);
-  font-size: 13px;
+  font-size: calc(13px + 1pt);
   font-weight: 300;
   line-height: 1.75;
   color: #1f1f1f;
@@ -435,7 +435,7 @@ h2 {
 }
 
 .invite-family__parents {
-  font-size: 11px;
+  font-size: calc(11px + 1pt);
   letter-spacing: 0.01em;
 }
 
@@ -447,7 +447,7 @@ h2 {
 
 .invite-family__name {
   font-weight: 300;
-  font-size: 13px;
+  font-size: calc(13px + 1pt);
 }
 
 .countdown-thumbs {
@@ -719,13 +719,13 @@ h2 {
 }
 
 .info strong {
-  font-size: 11px;
+  font-size: calc(11px + 1pt);
   font-weight: 300;
   color: #3a3a3a;
 }
 
 .info span {
-  font-size: 12px;
+  font-size: calc(12px + 1pt);
   font-weight: 300;
 }
 
@@ -1141,10 +1141,11 @@ button,
 
 .contact-copy {
   margin: 0 0 14px;
-  color: #4f4f4f;
+  color: #141414;
   font-size: 13px;
   line-height: 1.55;
-  font-weight: 400;
+  font-weight: 300;
+  letter-spacing: -0.03em;
   text-align: left;
 }
 
@@ -1538,16 +1539,16 @@ body.guestbook-thank-open {
   }
 
   .invite-greeting {
-    font-size: 10px;
+    font-size: calc(10px + 1pt);
   }
 
   .invite-family__parents,
   .invite-family__suffix {
-    font-size: 9px;
+    font-size: calc(9px + 1pt);
   }
 
   .invite-family__name {
-    font-size: 13px;
+    font-size: calc(13px + 1pt);
   }
 
   .account-item {

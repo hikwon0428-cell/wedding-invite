@@ -1,10 +1,16 @@
 const targetDate = new Date("2026-08-22T13:00:00+09:00");
 // 같은 파일명으로 사진만 교체했을 때 강력 새로고침 없이 반영되도록 버전을 올립니다.
-const ASSET_VERSION = "20260519";
+const ASSET_VERSION = "20260520";
+const JPEG_IMAGE_NUMBERS = new Set([2, 3, 17, 18, 25]);
 
 function assetUrl(path) {
   const separator = path.includes("?") ? "&" : "?";
   return `${path}${separator}v=${ASSET_VERSION}`;
+}
+
+function imageFilePath(num) {
+  const ext = JPEG_IMAGE_NUMBERS.has(num) ? "jpeg" : "jpg";
+  return assetUrl(`./images/${num}.${ext}`);
 }
 
 const dayEl = document.getElementById("days");
@@ -258,7 +264,7 @@ function initGallery() {
   }
 
   const images = Array.from({ length: 21 }, (_value, index) => ({
-    src: assetUrl(`./images/${index + 4}.jpg`),
+    src: imageFilePath(index + 4),
     fallback: assetUrl("./images/1.jpg"),
   }));
 
