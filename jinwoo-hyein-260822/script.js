@@ -1,7 +1,7 @@
 const targetDate = new Date("2026-08-22T13:00:00+09:00");
 // 같은 파일명으로 사진만 교체했을 때 강력 새로고침 없이 반영되도록 버전을 올립니다.
-const ASSET_VERSION = "20260520";
-const JPEG_IMAGE_NUMBERS = new Set([2, 3, 17, 18, 25]);
+const ASSET_VERSION = "20260521";
+const JPEG_IMAGE_NUMBERS = new Set([2, 3, 17, 18, 19, 20, 21, 25]);
 
 function assetUrl(path) {
   const separator = path.includes("?") ? "&" : "?";
@@ -12,6 +12,55 @@ function imageFilePath(num) {
   const ext = JPEG_IMAGE_NUMBERS.has(num) ? "jpeg" : "jpg";
   return assetUrl(`./images/${num}.${ext}`);
 }
+
+function hasFirebaseConfig(config) {
+  if (!config || typeof config !== "object") return false;
+  const requiredKeys = ["apiKey", "authDomain", "projectId", "appId"];
+  return requiredKeys.every((key) => typeof config[key] === "string" && config[key].trim().length > 0);
+}
+
+function getFirestoreCollection(collectionName) {
+  if (!window.firebase) return null;
+  const config = window.WEDDING_FIREBASE_CONFIG;
+  if (!hasFirebaseConfig(config)) return null;
+
+  const app = window.firebase.apps.length
+    ? window.firebase.app()
+    : window.firebase.initializeApp(config);
+  return app.firestore().collection(collectionName);
+}
+
+const SHUTTLE_SCHEDULE_LABELS = {
+  "station-1140": "순천역 출발 · 11시 40분",
+  "station-1250": "순천역 출발 · 12시 50분",
+  "venue-1400": "더헤윰 출발 · 14시",
+  "venue-1500": "더헤윰 출발 · 15시",
+};
+
+const SHUTTLE_PICKUP_LABELS = {
+  "suncheon-station": "순천역",
+  "suncheon-terminal": "순천터미널",
+  venue: "더헤윰",
+};
+
+const SHUTTLE_VENUE_DEPARTURES = new Set(["venue-1400", "venue-1500"]);
+
+const RSVP_SIDE_LABELS = {
+  groom: "신랑측",
+  bride: "신부측",
+};
+
+const RSVP_ATTENDANCE_LABELS = {
+  attending: "참석 가능",
+  not_attending: "참석 불가",
+};
+
+const RSVP_THANK_MESSAGES = {
+  attending:
+    "저희의 소중한 날에<br />함께해 주셔서 감사합니다.<br />예식 날 반가운 마음으로 뵙겠습니다.",
+  not_attending:
+    "따뜻한 마음으로 저희의 시작을<br /> 축복해 주셔서 감사합니다.<br />보내주신 마음 소중히 간직하겠습니다.",
+};
 
 const dayEl = document.getElementById("days");
 const hourEl = document.getElementById("hours");
@@ -49,11 +98,17 @@ function updateCountdown() {
 const toast = document.getElementById("toast");
 let toastTimer;
 
-function showToast(message) {
+function showToast(message, options = {}) {
+  if (!toast) return;
+  const center = Boolean(options.center);
   toast.textContent = message;
+  toast.classList.toggle("toast--center", center);
   toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("show"), 1500);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+    toast.classList.remove("toast--center");
+  }, 1500);
 }
 
 async function copyText(value) {
@@ -391,6 +446,35 @@ function initGallery() {
     if (event.target === modal) closeModal();
   });
 
+  function preventModalZoom(event) {
+    event.preventDefault();
+  }
+
+  function onModalTouchMove(event) {
+    if (event.touches.length > 1) {
+      event.preventDefault();
+    }
+  }
+
+  function onModalImageTouchEnd(event) {
+    const now = Date.now();
+    const sinceLastTap = now - Number(modalImage.dataset.lastTap || 0);
+    if (sinceLastTap > 0 && sinceLastTap < 320) {
+      event.preventDefault();
+    }
+    modalImage.dataset.lastTap = String(now);
+  }
+
+  ["gesturestart", "gesturechange", "gestureend"].forEach((type) => {
+    modal.addEventListener(type, preventModalZoom, { passive: false });
+  });
+  modal.addEventListener("touchmove", onModalTouchMove, { passive: false });
+  modal.addEventListener("wheel", (event) => {
+    if (event.ctrlKey) event.preventDefault();
+  }, { passive: false });
+  modalImage.addEventListener("dblclick", preventModalZoom);
+  modalImage.addEventListener("touchend", onModalImageTouchEnd, { passive: false });
+
   window.addEventListener("keydown", (event) => {
     if (modal.hidden) return;
     if (event.key === "Escape") closeModal();
@@ -399,6 +483,477 @@ function initGallery() {
   });
 
   renderGrid();
+}
+
+function normalizePhoneNumber(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+  if (digits.length < 10 || digits.length > 11) return "";
+  return digits;
+}
+
+function formatPhoneNumber(digits) {
+  if (digits.length === 11) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+  }
+  if (digits.length === 10) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  return digits;
+}
+
+function getSelectLabel(select) {
+  if (!select || select.selectedIndex < 0) return "";
+  return select.options[select.selectedIndex]?.text || "";
+}
+
+function initShuttle() {
+  const form = document.getElementById("shuttle-form");
+  const nameInput = document.getElementById("shuttle-name");
+  const phoneInput = document.getElementById("shuttle-phone");
+  const tripInputs = Array.from(form?.querySelectorAll('input[name="shuttle-trip"]') || []);
+  const roundTimes = document.getElementById("shuttle-times-round");
+  const stationTimeSelect = document.getElementById("shuttle-station-time");
+  const venueTimeSelect = document.getElementById("shuttle-venue-time");
+  const onewayTimes = document.getElementById("shuttle-times-oneway");
+  const onewayTimeSelect = document.getElementById("shuttle-oneway-time");
+  const pickupSelect = document.getElementById("shuttle-pickup");
+  const pickupField = document.getElementById("shuttle-pickup-field");
+  const fab = document.getElementById("shuttle-fab");
+  const modal = document.getElementById("shuttle-modal");
+  const modalClose = document.getElementById("shuttle-modal-close");
+  if (
+    !form ||
+    !nameInput ||
+    !phoneInput ||
+    tripInputs.length === 0 ||
+    !roundTimes ||
+    !stationTimeSelect ||
+    !venueTimeSelect ||
+    !onewayTimes ||
+    !onewayTimeSelect ||
+    !pickupSelect ||
+    !pickupField ||
+    !modal ||
+    !modalClose
+  ) {
+    return;
+  }
+
+  const remoteCollection = getFirestoreCollection("shuttleReservations");
+  const storageKey = "wedding_shuttle_reservations_v1";
+
+  function getTripType() {
+    return form.querySelector('input[name="shuttle-trip"]:checked')?.value || "round";
+  }
+
+  function isRoundTrip() {
+    return getTripType() === "round";
+  }
+
+  function openModal(prefill) {
+    if (prefill?.name) {
+      nameInput.value = String(prefill.name).slice(0, 12);
+    }
+    if (prefill?.phone) {
+      const digits = normalizePhoneNumber(prefill.phone);
+      phoneInput.value = digits ? formatPhoneNumber(digits) : String(prefill.phone);
+    }
+
+    modal.hidden = false;
+    document.body.classList.add("shuttle-modal-open");
+    nameInput.focus();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    modal.classList.remove("is-stacked");
+    document.body.classList.remove("shuttle-modal-open");
+  }
+
+  window.weddingOpenShuttleModal = (prefill) => {
+    modal.classList.add("is-stacked");
+    openModal(prefill);
+  };
+
+  function updatePickupField() {
+    if (isRoundTrip()) {
+      pickupField.hidden = false;
+      pickupSelect.required = true;
+      return;
+    }
+
+    const scheduleId = onewayTimeSelect.value;
+    const isVenueDeparture = SHUTTLE_VENUE_DEPARTURES.has(scheduleId);
+    pickupField.hidden = isVenueDeparture;
+    pickupSelect.required = !isVenueDeparture;
+    if (isVenueDeparture) {
+      pickupSelect.value = "";
+    }
+  }
+
+  function updateTripTypeUI() {
+    const round = isRoundTrip();
+    roundTimes.hidden = !round;
+    onewayTimes.hidden = round;
+    stationTimeSelect.required = round;
+    venueTimeSelect.required = round;
+    onewayTimeSelect.required = !round;
+
+    if (round) {
+      onewayTimeSelect.value = "";
+    } else {
+      stationTimeSelect.value = "";
+      venueTimeSelect.value = "";
+    }
+
+    updatePickupField();
+  }
+
+  function buildSchedulePayload() {
+    if (isRoundTrip()) {
+      const stationId = stationTimeSelect.value;
+      const venueId = venueTimeSelect.value;
+      if (!stationId || !venueId) {
+        return null;
+      }
+
+      const stationLabel = getSelectLabel(stationTimeSelect);
+      const venueLabel = getSelectLabel(venueTimeSelect);
+      return {
+        tripType: "round",
+        scheduleId: `${stationId},${venueId}`,
+        scheduleStationId: stationId,
+        scheduleVenueId: venueId,
+        scheduleLabel: `왕복 · ${stationLabel} / ${venueLabel}`,
+        needsPickup: true,
+      };
+    }
+
+    const scheduleId = onewayTimeSelect.value;
+    if (!scheduleId) {
+      return null;
+    }
+
+    const isVenueDeparture = SHUTTLE_VENUE_DEPARTURES.has(scheduleId);
+    return {
+      tripType: "oneway",
+      scheduleId,
+      scheduleStationId: isVenueDeparture ? "" : scheduleId,
+      scheduleVenueId: isVenueDeparture ? scheduleId : "",
+      scheduleLabel: `편도 · ${getSelectLabel(onewayTimeSelect)}`,
+      needsPickup: !isVenueDeparture,
+    };
+  }
+
+  if (fab) {
+    fab.addEventListener("click", () => openModal());
+  }
+  modalClose.addEventListener("click", closeModal);
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal();
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (modal.hidden) return;
+    if (event.key === "Escape") closeModal();
+  });
+
+  tripInputs.forEach((input) => {
+    input.addEventListener("change", updateTripTypeUI);
+  });
+  stationTimeSelect.addEventListener("change", updatePickupField);
+  onewayTimeSelect.addEventListener("change", updatePickupField);
+  updateTripTypeUI();
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = nameInput.value.trim().slice(0, 12);
+    const phoneDigits = normalizePhoneNumber(phoneInput.value);
+    const schedule = buildSchedulePayload();
+
+    if (!name || !phoneDigits || !schedule) {
+      showToast("입력 정보를 확인해 주세요.");
+      return;
+    }
+
+    let pickupId = "venue";
+    let pickupLabel = SHUTTLE_PICKUP_LABELS.venue;
+
+    if (schedule.needsPickup) {
+      pickupId = pickupSelect.value;
+      pickupLabel = SHUTTLE_PICKUP_LABELS[pickupId] || "";
+      if (!pickupId) {
+        showToast("픽업 장소를 선택해 주세요.");
+        return;
+      }
+    }
+
+    const entry = {
+      name,
+      phone: phoneDigits,
+      phoneDisplay: formatPhoneNumber(phoneDigits),
+      tripType: schedule.tripType,
+      scheduleId: schedule.scheduleId,
+      scheduleStationId: schedule.scheduleStationId || "",
+      scheduleVenueId: schedule.scheduleVenueId || "",
+      scheduleLabel: schedule.scheduleLabel,
+      pickupId,
+      pickupLabel,
+      createdAt: new Date().toISOString(),
+    };
+
+    if (remoteCollection) {
+      try {
+        await remoteCollection.add({
+          name: entry.name,
+          phone: entry.phone,
+          phoneDisplay: entry.phoneDisplay,
+          tripType: entry.tripType,
+          scheduleId: entry.scheduleId,
+          scheduleStationId: entry.scheduleStationId,
+          scheduleVenueId: entry.scheduleVenueId,
+          scheduleLabel: entry.scheduleLabel,
+          pickupId: entry.pickupId,
+          pickupLabel: entry.pickupLabel,
+          createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      } catch (_error) {
+        showToast("신청에 실패했습니다.");
+        return;
+      }
+    } else {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        const entries = raw ? JSON.parse(raw) : [];
+        const nextEntries = Array.isArray(entries) ? entries : [];
+        nextEntries.unshift(entry);
+        localStorage.setItem(storageKey, JSON.stringify(nextEntries.slice(0, 100)));
+      } catch (_error) {
+        showToast("신청에 실패했습니다.");
+        return;
+      }
+    }
+
+    form.reset();
+    const roundInput = form.querySelector('input[name="shuttle-trip"][value="round"]');
+    if (roundInput) roundInput.checked = true;
+    updateTripTypeUI();
+    closeModal();
+    showToast("신청되었습니다.", { center: true });
+  });
+}
+
+function initRsvp() {
+  const form = document.getElementById("rsvp-form");
+  const nameInput = document.getElementById("rsvp-name");
+  const phoneInput = document.getElementById("rsvp-phone");
+  const sideInputs = Array.from(form?.querySelectorAll('input[name="rsvp-side"]') || []);
+  const attendanceInputs = Array.from(form?.querySelectorAll('input[name="rsvp-attendance"]') || []);
+  const guestCountField = document.getElementById("rsvp-guest-count-field");
+  const guestCountSelect = document.getElementById("rsvp-guest-count");
+  const shuttleOpenBtn = document.getElementById("rsvp-shuttle-open");
+  const fab = document.getElementById("rsvp-fab");
+  const modal = document.getElementById("rsvp-modal");
+  const modalClose = document.getElementById("rsvp-modal-close");
+  const thankModal = document.getElementById("rsvp-thank-modal");
+  const thankClose = document.getElementById("rsvp-thank-close");
+  const thankMessage = document.getElementById("rsvp-thank-message");
+  if (
+    !form ||
+    !nameInput ||
+    !phoneInput ||
+    sideInputs.length === 0 ||
+    attendanceInputs.length === 0 ||
+    !guestCountField ||
+    !guestCountSelect ||
+    !shuttleOpenBtn ||
+    !fab ||
+    !modal ||
+    !modalClose ||
+    !thankModal ||
+    !thankClose ||
+    !thankMessage
+  ) {
+    return;
+  }
+
+  const remoteCollection = getFirestoreCollection("rsvpResponses");
+  const storageKey = "wedding_rsvp_responses_v1";
+
+  function getSide() {
+    return form.querySelector('input[name="rsvp-side"]:checked')?.value || "";
+  }
+
+  function getAttendance() {
+    return form.querySelector('input[name="rsvp-attendance"]:checked')?.value || "attending";
+  }
+
+  function isAttending() {
+    return getAttendance() === "attending";
+  }
+
+  function resetGuestCountSelect() {
+    guestCountSelect.value = "";
+  }
+
+  function updateGuestCountField() {
+    const attending = isAttending();
+    guestCountField.hidden = !attending;
+    guestCountSelect.required = false;
+    if (!attending) {
+      resetGuestCountSelect();
+    }
+  }
+
+  function openModal() {
+    modal.hidden = false;
+    document.body.classList.add("rsvp-modal-open");
+    nameInput.focus();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    document.body.classList.remove("rsvp-modal-open");
+  }
+
+  function openThankModal(attendance) {
+    const message = RSVP_THANK_MESSAGES[attendance] || RSVP_THANK_MESSAGES.attending;
+    thankMessage.innerHTML = message;
+    thankModal.hidden = false;
+    document.body.classList.add("guestbook-thank-open");
+    thankClose.focus();
+  }
+
+  function closeThankModal() {
+    thankModal.hidden = true;
+    document.body.classList.remove("guestbook-thank-open");
+  }
+
+  fab.addEventListener("click", openModal);
+  modalClose.addEventListener("click", closeModal);
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal();
+  });
+
+  shuttleOpenBtn.addEventListener("click", () => {
+    if (typeof window.weddingOpenShuttleModal !== "function") {
+      showToast("셔틀 신청 창을 열 수 없습니다.");
+      return;
+    }
+
+    window.weddingOpenShuttleModal({
+      name: nameInput.value.trim(),
+      phone: phoneInput.value.trim(),
+    });
+  });
+
+  thankClose.addEventListener("click", closeThankModal);
+  thankModal.addEventListener("click", (event) => {
+    if (event.target === thankModal) closeThankModal();
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (!thankModal.hidden) {
+      closeThankModal();
+      return;
+    }
+    if (modal.hidden) return;
+    const shuttleModal = document.getElementById("shuttle-modal");
+    if (shuttleModal && !shuttleModal.hidden) return;
+    closeModal();
+  });
+
+  attendanceInputs.forEach((input) => {
+    input.addEventListener("change", updateGuestCountField);
+  });
+  updateGuestCountField();
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = nameInput.value.trim().slice(0, 12);
+    const phoneDigits = normalizePhoneNumber(phoneInput.value);
+    const side = getSide();
+    const sideLabel = RSVP_SIDE_LABELS[side] || "";
+    const attendance = getAttendance();
+    const attendanceLabel = RSVP_ATTENDANCE_LABELS[attendance] || "";
+    const guestCountRaw = isAttending() ? guestCountSelect.value : "";
+    const guestCount = guestCountRaw === "" ? null : Number(guestCountRaw);
+    const guestCountLabel =
+      guestCount === null
+        ? ""
+        : guestCount === 0
+          ? "없음"
+          : `${guestCount}명`;
+
+    if (!name || !phoneDigits || !sideLabel || !attendanceLabel) {
+      showToast("입력 정보를 확인해 주세요.");
+      return;
+    }
+
+    if (guestCount !== null && (!Number.isFinite(guestCount) || guestCount < 0)) {
+      showToast("동행 인원을 확인해 주세요.");
+      return;
+    }
+
+    const entry = {
+      name,
+      phone: phoneDigits,
+      phoneDisplay: formatPhoneNumber(phoneDigits),
+      side,
+      sideLabel,
+      attendance,
+      attendanceLabel,
+      guestCount,
+      guestCountLabel,
+      createdAt: new Date().toISOString(),
+    };
+
+    if (remoteCollection) {
+      try {
+        await remoteCollection.add({
+          name: entry.name,
+          phone: entry.phone,
+          phoneDisplay: entry.phoneDisplay,
+          side: entry.side,
+          sideLabel: entry.sideLabel,
+          attendance: entry.attendance,
+          attendanceLabel: entry.attendanceLabel,
+          guestCount: entry.guestCount,
+          guestCountLabel: entry.guestCountLabel,
+          createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+        });
+      } catch (_error) {
+        showToast("전달에 실패했습니다.");
+        return;
+      }
+    } else {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        const entries = raw ? JSON.parse(raw) : [];
+        const nextEntries = Array.isArray(entries) ? entries : [];
+        nextEntries.unshift(entry);
+        localStorage.setItem(storageKey, JSON.stringify(nextEntries.slice(0, 100)));
+      } catch (_error) {
+        showToast("전달에 실패했습니다.");
+        return;
+      }
+    }
+
+    form.reset();
+    const attendingInput = form.querySelector('input[name="rsvp-attendance"][value="attending"]');
+    if (attendingInput) attendingInput.checked = true;
+    sideInputs.forEach((input) => {
+      input.checked = false;
+    });
+    resetGuestCountSelect();
+    updateGuestCountField();
+    const submittedAttendance = attendance;
+    closeModal();
+    openThankModal(submittedAttendance);
+  });
 }
 
 function initGuestbook() {
@@ -509,26 +1064,7 @@ function initGuestbook() {
     }
   }
 
-  function hasFirebaseConfig(config) {
-    if (!config || typeof config !== "object") return false;
-    const requiredKeys = ["apiKey", "authDomain", "projectId", "appId"];
-    return requiredKeys.every((key) => typeof config[key] === "string" && config[key].trim().length > 0);
-  }
-
-  function initRemoteGuestbook() {
-    if (!window.firebase) return null;
-    const config = window.WEDDING_FIREBASE_CONFIG;
-    if (!hasFirebaseConfig(config)) return null;
-
-    const app = window.firebase.apps.length
-      ? window.firebase.app()
-      : window.firebase.initializeApp(config);
-    const db = app.firestore();
-    const collectionRef = db.collection("guestbookEntries");
-    return collectionRef;
-  }
-
-  const remoteCollection = initRemoteGuestbook();
+  const remoteCollection = getFirestoreCollection("guestbookEntries");
 
   entries = readEntries();
   render(entries);
@@ -671,7 +1207,7 @@ function initSmoothWheelScroll() {
       if (!(el instanceof Element)) return;
       if (
         el.closest(
-          "input, textarea, [contenteditable='true'], #naver-map, .gallery-modal, .guestbook-modal, .guestbook-thank-modal"
+          "input, textarea, select, [contenteditable='true'], #naver-map, .gallery-modal, .guestbook-modal, .guestbook-thank-modal, #rsvp-thank-modal, #shuttle-modal, #rsvp-modal"
         )
       ) {
         return;
@@ -750,6 +1286,8 @@ window.addEventListener("load", initNaverMap);
 window.addEventListener("load", initIntroSequence);
 window.addEventListener("load", initHeroFixedBackground);
 window.addEventListener("load", initGallery);
+window.addEventListener("load", initShuttle);
+window.addEventListener("load", initRsvp);
 window.addEventListener("load", initGuestbook);
 window.addEventListener("load", initSmoothWheelScroll);
 window.addEventListener("load", initKakaoShareButton);

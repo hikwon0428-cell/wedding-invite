@@ -661,13 +661,20 @@ h2 {
   margin-top: 320px;
   background: #ffffff;
   padding-top: 306px;
-  padding-bottom: 68px;
+  padding-bottom: 136px;
+}
+
+.section.rsvp {
+  margin-top: 0;
+  background: #ffffff;
+  padding-top: 400px;
+  padding-bottom: 240px;
 }
 
 .section.contact {
   margin-top: 0;
   background: #ffffff;
-  padding-top: 388px;
+  padding-top: 400px;
   padding-bottom: 0;
 }
 
@@ -707,6 +714,193 @@ h2 {
 
 .section.map .directions-item {
   border-bottom-color: rgba(255, 255, 255, 0.75);
+}
+
+.section.map .shuttle-block {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.shuttle-title-ko {
+  margin: 0 0 12px;
+  font-family: var(--font-ko);
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.shuttle-help {
+  margin: 0 0 10px;
+  font-family: var(--font-ko);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.92);
+  word-break: keep-all;
+}
+
+.shuttle-route {
+  margin: 0 0 14px;
+  font-family: var(--font-ko);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: #ffffff;
+  word-break: keep-all;
+}
+
+.shuttle-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0;
+}
+
+.shuttle-form .shuttle-note {
+  margin: 10px 0 0;
+  font-family: var(--font-ko);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: #333333;
+  word-break: keep-all;
+}
+
+.shuttle-fab {
+  width: auto;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: #ffffff;
+  color: #111111;
+  font-family: var(--font-ko);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.shuttle-form {
+  display: grid;
+  gap: 10px;
+}
+
+.shuttle-field {
+  display: grid;
+  gap: 6px;
+}
+
+.shuttle-trip-field {
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.shuttle-trip-field .shuttle-label {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  float: none;
+}
+
+.shuttle-trip-field .shuttle-trip-options {
+  margin-top: 1em;
+  padding-left: 1em;
+}
+
+.shuttle-trip-field + .shuttle-times-round,
+.shuttle-trip-field + .shuttle-times-oneway {
+  margin-top: 1em;
+}
+
+.shuttle-trip-options {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+}
+
+.shuttle-trip-option {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.3em;
+  font-family: var(--font-ko);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  color: #333333;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.shuttle-trip-option:first-child span {
+  margin-right: 1em;
+}
+
+.shuttle-form .shuttle-trip-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  flex-shrink: 0;
+  accent-color: #111111;
+  box-sizing: border-box;
+}
+
+
+.shuttle-times-round {
+  display: grid;
+  gap: 10px;
+}
+
+.shuttle-times-round[hidden],
+.shuttle-times-oneway[hidden] {
+  display: none;
+}
+
+.shuttle-label {
+  font-family: var(--font-ko);
+  font-size: 12px;
+  font-weight: 400;
+  color: #333333;
+}
+
+.shuttle-form input,
+.shuttle-form select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 0;
+  padding: 10px 12px;
+  font-family: var(--font-ko);
+  font-size: 13px;
+  color: #111111;
+  background: #ffffff;
+}
+
+.shuttle-form select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #666 50%),
+    linear-gradient(135deg, #666 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% + 2px), calc(100% - 12px) calc(50% + 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.shuttle-field[hidden] {
+  display: none;
+}
+
+.shuttle-form button[type="submit"] {
+  width: 100%;
+  margin-top: 4px;
+}
+
+body.shuttle-modal-open {
+  overflow: hidden;
 }
 
 @media (max-width: 360px) {
@@ -784,6 +978,7 @@ h2 {
   align-items: center;
   justify-content: center;
   z-index: 120;
+  touch-action: none;
 }
 
 .gallery-modal[hidden] {
@@ -796,6 +991,9 @@ h2 {
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+  pointer-events: none;
 }
 
 .gallery-modal-close {
@@ -834,6 +1032,7 @@ h2 {
 
 body.gallery-modal-open {
   overflow: hidden;
+  touch-action: none;
 }
 
 /* Override shared button style for gallery controls */
@@ -905,10 +1104,6 @@ body.gallery-modal-open {
 
 .gallery-modal-nav {
   font-size: 42px;
-}
-
-.gallery-modal-image {
-  touch-action: pan-y;
 }
 
 .account-card {
@@ -1129,15 +1324,45 @@ button,
 .contact-links {
   display: grid;
   gap: 10px;
-  margin: 34px 0;
+  margin: 34px auto;
+  width: max-content;
+  max-width: 100%;
+  justify-items: stretch;
 }
 
 .contact-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: auto;
-  justify-self: center;
+  min-width: 100%;
+  box-sizing: border-box;
   padding: 7px 12px;
   border-radius: 8px;
   font-size: 11px;
+  white-space: nowrap;
+}
+
+.contact-links .kakao-share-btn {
+  gap: 5px;
+  background: #fee500;
+  border-color: #fee500;
+  color: #191919;
+  font-weight: 200;
+}
+
+.kakao-share-btn__icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.kakao-share-btn__icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .contact-copy {
@@ -1155,6 +1380,188 @@ button,
   color: #4f4f4f;
   font-size: 13px;
   line-height: 1.55;
+}
+
+.rsvp-help {
+  margin: 0 0 14px;
+  color: #4f4f4f;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.rsvp-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.shuttle-help--rsvp {
+  margin-top: 12px;
+}
+
+.rsvp-form {
+  display: grid;
+  gap: 16px;
+}
+
+.rsvp-field-group {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rsvp-group-title {
+  display: block;
+  margin: 0 0 10px;
+  font-family: var(--font-ko);
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+}
+
+.rsvp-choice-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.rsvp-choice-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 72px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  padding: 12px 10px;
+  cursor: pointer;
+  font-family: var(--font-ko);
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+  background: #ffffff;
+}
+
+.rsvp-choice-card--text {
+  min-height: 48px;
+}
+
+.rsvp-choice-card input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.rsvp-choice-card:has(input:checked) {
+  border-color: #111111;
+  background: #f7f7f7;
+  font-weight: 500;
+}
+
+.rsvp-choice-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.rsvp-choice-text {
+  line-height: 1.3;
+}
+
+.rsvp-field {
+  display: grid;
+  gap: 8px;
+}
+
+.rsvp-field-label {
+  font-family: var(--font-ko);
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+}
+
+.rsvp-required {
+  font-style: normal;
+  font-weight: 400;
+  color: #6b8cae;
+}
+
+.rsvp-optional {
+  font-weight: 400;
+  color: #888888;
+}
+
+.rsvp-form input,
+.rsvp-form select {
+  width: 100%;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: var(--font-ko);
+  font-size: 14px;
+  color: #111111;
+  background: #ffffff;
+}
+
+.rsvp-form select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #666 50%),
+    linear-gradient(135deg, #666 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% + 2px), calc(100% - 12px) calc(50% + 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.rsvp-field[hidden] {
+  display: none;
+}
+
+.rsvp-shuttle-block {
+  display: grid;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.rsvp-shuttle-help {
+  margin: 0;
+  font-family: var(--font-ko);
+  font-size: 12px;
+  line-height: 1.5;
+  color: #666666;
+}
+
+.rsvp-shuttle-btn {
+  width: 100%;
+  border: 1px solid #111111;
+  border-radius: 8px;
+  padding: 12px;
+  background: #ffffff;
+  color: #111111;
+  font-family: var(--font-ko);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.rsvp-submit {
+  width: 100%;
+  border: 1px solid #111111;
+  border-radius: 8px;
+  padding: 12px;
+  background: #111111;
+  color: #ffffff;
+  font-family: var(--font-ko);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+#rsvp-modal {
+  z-index: 110;
+}
+
+#shuttle-modal.is-stacked {
+  z-index: 120;
 }
 
 .guestbook-form {
@@ -1281,6 +1688,8 @@ button,
 
 .guestbook-modal-card {
   width: min(100%, 460px);
+  max-height: min(92vh, 760px);
+  overflow-y: auto;
   background: #ffffff;
   border-top: 1px solid #dddddd;
   padding: 18px 16px 16px;
@@ -1308,8 +1717,13 @@ button,
 }
 
 body.guestbook-modal-open,
-body.guestbook-thank-open {
+body.guestbook-thank-open,
+body.rsvp-modal-open {
   overflow: hidden;
+}
+
+#rsvp-thank-modal {
+  z-index: 125;
 }
 
 .guestbook-thank-modal {
@@ -1513,6 +1927,7 @@ body.guestbook-thank-open {
   position: fixed;
   left: 50%;
   bottom: 26px;
+  z-index: 200;
   transform: translateX(-50%) translateY(10px);
   background: #111111;
   color: #ffffff;
@@ -1529,6 +1944,16 @@ body.guestbook-thank-open {
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+.toast.toast--center {
+  top: 50%;
+  bottom: auto;
+  transform: translate(-50%, calc(-50% + 10px));
+}
+
+.toast.toast--center.show {
+  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 360px) {

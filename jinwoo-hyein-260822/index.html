@@ -76,7 +76,7 @@
           <div class="hero-bg-fixed__frame">
             <img
               class="hero-bg-fixed__img"
-              src="./images/1.jpg?v=20260520"
+              src="./images/1.jpg?v=20260521"
               alt=""
               width="1200"
               height="1500"
@@ -137,7 +137,7 @@
         <div class="countdown-thumbs" aria-hidden="true">
           <figure class="countdown-thumb">
             <img
-              src="./images/2.jpeg?v=20260520"
+              src="./images/2.jpeg?v=20260521"
               alt=""
               width="200"
               height="200"
@@ -147,7 +147,7 @@
           </figure>
           <figure class="countdown-thumb">
             <img
-              src="./images/3.jpeg?v=20260520"
+              src="./images/3.jpeg?v=20260521"
               alt=""
               width="200"
               height="200"
@@ -311,6 +311,15 @@
             >티맵</a
           >
         </div>
+        <div class="shuttle-block reveal" id="shuttle-section">
+          <h3 class="shuttle-title-ko">셔틀버스 안내</h3>
+          <p class="shuttle-help">
+            멀리서 오시는 분들께서 편안히 오실 수 있도록 셔틀버스를 마련했습니다.<br />
+            이용을 원하시는 분께서는 아래 참석 의사 전달 창을 통해 작성해 주시면 감사하겠습니다.
+          </p>
+          <p class="shuttle-route">구간 : 순천역 ↔ 순천터미널 ↔ 더헤윰 웨딩홀</p>
+          <p class="shuttle-help shuttle-help--rsvp">이용 신청은 RSVP 「참석 의사 전달하기」에서 해 주세요.</p>
+        </div>
       </section>
 
       <section class="section guestbook">
@@ -323,6 +332,17 @@
         <div class="guestbook-pagination reveal" id="guestbook-pagination" aria-label="방명록 페이지"></div>
       </section>
 
+      <section class="section rsvp">
+        <h2 class="section-title-en reveal">RSVP</h2>
+        <p class="rsvp-help reveal">
+          결혼식 참석 여부를 알려주시면<br />
+          예식 준비에 큰 도움이 됩니다.
+        </p>
+        <div class="rsvp-actions reveal">
+          <button class="guestbook-fab" id="rsvp-fab" type="button">참석 의사 전달하기</button>
+        </div>
+      </section>
+
       <section class="section contact">
         <h2 class="reveal">WITH OUR WHOLE HEART,</h2>
         <p class="contact-copy reveal">
@@ -331,7 +351,29 @@
         <div class="contact-links reveal">
           <a href="tel:01087000619">신랑에게 연락하기</a>
           <a href="tel:01094368203">신부에게 연락하기</a>
-          <a href="#" id="kakao-share-btn" role="button">카카오톡 공유하기</a>
+          <a href="#" id="kakao-share-btn" class="kakao-share-btn" role="button">
+            <span class="kakao-share-btn__icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+                <path
+                  fill="#3b1e1e"
+                  d="M16 3C8.82 3 3 7.58 3 13.12c0 3.37 2.22 6.33 5.59 8.05-.24.9-.88 3.22-1.01 3.72 0 0-.04.34.17.42.21.08.33-.07.53-.33.2-.26 3.15-3.73 3.15-3.73.56.08 1.13.12 1.72.12 7.18 0 13-4.58 13-10.12S23.18 3 16 3z"
+                />
+                <text
+                  x="16"
+                  y="13.6"
+                  text-anchor="middle"
+                  fill="#fee500"
+                  font-family="Arial, Helvetica, sans-serif"
+                  font-size="7.2"
+                  font-weight="800"
+                  letter-spacing="-0.15"
+                >
+                  TALK
+                </text>
+              </svg>
+            </span>
+            카카오톡 공유하기
+          </a>
         </div>
         <p class="contact-copy contact-copy--bottom reveal">
           소중한 분들과 함께할 이 날을 마음 깊이 기다리고 있겠습니다.
@@ -339,7 +381,7 @@
         <div class="site-credit-band reveal" aria-label="Copyright">
           <img
             class="site-credit-band__img"
-            src="./images/25.jpeg?v=20260520"
+            src="./images/25.jpeg?v=20260521"
             alt=""
             width="896"
             height="671"
@@ -366,6 +408,159 @@
       </button>
     </div>
 
+    <div class="guestbook-modal" id="shuttle-modal" hidden aria-modal="true" role="dialog">
+      <div class="guestbook-modal-card">
+        <button class="guestbook-modal-close" id="shuttle-modal-close" type="button" aria-label="닫기">
+          ×
+        </button>
+        <h3 class="guestbook-modal-title">셔틀버스 이용 신청</h3>
+        <form class="shuttle-form" id="shuttle-form" novalidate>
+          <label class="shuttle-field" for="shuttle-name">
+            <span class="shuttle-label">이름</span>
+            <input id="shuttle-name" type="text" maxlength="12" placeholder="이름" required />
+          </label>
+          <label class="shuttle-field" for="shuttle-phone">
+            <span class="shuttle-label">휴대폰 번호</span>
+            <input
+              id="shuttle-phone"
+              type="tel"
+              inputmode="numeric"
+              maxlength="13"
+              placeholder="01012345678"
+              required
+            />
+          </label>
+          <fieldset class="shuttle-field shuttle-trip-field">
+            <legend class="shuttle-label">이용 구분</legend>
+            <div class="shuttle-trip-options">
+              <label class="shuttle-trip-option">
+                <input type="radio" name="shuttle-trip" value="round" checked />
+                <span>왕복</span>
+              </label>
+              <label class="shuttle-trip-option">
+                <input type="radio" name="shuttle-trip" value="oneway" />
+                <span>편도</span>
+              </label>
+            </div>
+          </fieldset>
+          <div class="shuttle-times-round" id="shuttle-times-round">
+            <label class="shuttle-field" for="shuttle-station-time">
+              <span class="shuttle-label">순천역 출발</span>
+              <select id="shuttle-station-time" required>
+                <option value="" disabled selected>시간을 선택해 주세요</option>
+                <option value="station-1140">11시 40분</option>
+                <option value="station-1250">12시 50분</option>
+              </select>
+            </label>
+            <label class="shuttle-field" for="shuttle-venue-time">
+              <span class="shuttle-label">더헤윰 웨딩홀 출발</span>
+              <select id="shuttle-venue-time" required>
+                <option value="" disabled selected>시간을 선택해 주세요</option>
+                <option value="venue-1400">14시</option>
+                <option value="venue-1500">15시</option>
+              </select>
+            </label>
+          </div>
+          <label class="shuttle-field shuttle-times-oneway" id="shuttle-times-oneway" for="shuttle-oneway-time" hidden>
+            <span class="shuttle-label">이용 시간</span>
+            <select id="shuttle-oneway-time">
+              <option value="" disabled selected>시간을 선택해 주세요</option>
+              <option value="station-1140">순천역(출발지) · 11시 40분</option>
+              <option value="station-1250">순천역(출발지) · 12시 50분</option>
+              <option value="venue-1400">더헤윰 웨딩홀(출발지) · 14시</option>
+              <option value="venue-1500">더헤윰 웨딩홀(출발지) · 15시</option>
+            </select>
+          </label>
+          <label class="shuttle-field" id="shuttle-pickup-field" for="shuttle-pickup">
+            <span class="shuttle-label">픽업/드롭 장소</span>
+            <select id="shuttle-pickup" required>
+              <option value="" disabled selected>장소를 선택해 주세요</option>
+              <option value="suncheon-station">순천역</option>
+              <option value="suncheon-terminal">순천터미널</option>
+            </select>
+          </label>
+          <button type="submit">신청하기</button>
+          <p class="shuttle-note">
+            웨딩홀에서 운영하는 셔틀이 아닌 신랑·신부가 개인적으로 마련한 차량으로, 이용 인원 및
+            상황에 따라 노선과 시간이 일부 조정될 수 있습니다.
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <div class="guestbook-modal" id="rsvp-modal" hidden aria-modal="true" role="dialog">
+      <div class="guestbook-modal-card">
+        <button class="guestbook-modal-close" id="rsvp-modal-close" type="button" aria-label="닫기">
+          ×
+        </button>
+        <h3 class="guestbook-modal-title">참석 의사 전달</h3>
+        <form class="rsvp-form" id="rsvp-form" novalidate>
+          <div class="rsvp-choice-row rsvp-side-row" role="radiogroup" aria-label="신랑측 또는 신부측">
+            <label class="rsvp-choice-card">
+              <input type="radio" name="rsvp-side" value="groom" required />
+              <span class="rsvp-choice-icon" aria-hidden="true">🤵</span>
+              <span class="rsvp-choice-text">신랑측</span>
+            </label>
+            <label class="rsvp-choice-card">
+              <input type="radio" name="rsvp-side" value="bride" required />
+              <span class="rsvp-choice-icon" aria-hidden="true">👰</span>
+              <span class="rsvp-choice-text">신부측</span>
+            </label>
+          </div>
+
+          <fieldset class="rsvp-field-group">
+            <legend class="rsvp-group-title">참석 여부를 선택해 주세요</legend>
+            <div class="rsvp-choice-row rsvp-attendance-row">
+              <label class="rsvp-choice-card rsvp-choice-card--text">
+                <input type="radio" name="rsvp-attendance" value="attending" checked />
+                <span class="rsvp-choice-text">참석 가능</span>
+              </label>
+              <label class="rsvp-choice-card rsvp-choice-card--text">
+                <input type="radio" name="rsvp-attendance" value="not_attending" />
+                <span class="rsvp-choice-text">참석 불가</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="rsvp-field" for="rsvp-name">
+            <span class="rsvp-field-label">성함 <em class="rsvp-required">(필수)</em></span>
+            <input id="rsvp-name" type="text" maxlength="12" placeholder="성함을 입력해 주세요" required />
+          </label>
+          <label class="rsvp-field" for="rsvp-phone">
+            <span class="rsvp-field-label">대표 연락처 <em class="rsvp-required">(필수)</em></span>
+            <input
+              id="rsvp-phone"
+              type="tel"
+              inputmode="numeric"
+              maxlength="13"
+              placeholder="01012345678"
+              required
+            />
+          </label>
+          <label class="rsvp-field" id="rsvp-guest-count-field" for="rsvp-guest-count">
+            <span class="rsvp-field-label">동행 인원 <span class="rsvp-optional">(본인 제외)</span></span>
+            <select id="rsvp-guest-count">
+              <option value="" selected disabled>선택해 주세요</option>
+              <option value="0">없음</option>
+              <option value="1">1명</option>
+              <option value="2">2명</option>
+              <option value="3">3명</option>
+              <option value="4">4명</option>
+              <option value="5">5명</option>
+              <option value="6">6명</option>
+            </select>
+          </label>
+
+          <div class="rsvp-shuttle-block">
+            <p class="rsvp-shuttle-help">셔틀버스를 이용하시는 분은 별도로 신청해 주세요.</p>
+            <button class="rsvp-shuttle-btn" id="rsvp-shuttle-open" type="button">셔틀버스 이용 신청</button>
+          </div>
+
+          <button class="rsvp-submit" type="submit">전달하기</button>
+        </form>
+      </div>
+    </div>
+
     <div class="guestbook-modal" id="guestbook-modal" hidden aria-modal="true" role="dialog">
       <div class="guestbook-modal-card">
         <button class="guestbook-modal-close" id="guestbook-modal-close" type="button" aria-label="닫기">
@@ -383,6 +578,33 @@
           ></textarea>
           <button type="submit">등록하기</button>
         </form>
+      </div>
+    </div>
+
+    <div
+      class="guestbook-thank-modal"
+      id="rsvp-thank-modal"
+      hidden
+      aria-modal="true"
+      role="dialog"
+      aria-label="참석 의사 감사 인사"
+    >
+      <div class="guestbook-thank-card">
+        <button class="guestbook-thank-close" id="rsvp-thank-close" type="button" aria-label="닫기">
+          ×
+        </button>
+        <div class="guestbook-thank-heading">
+          <img
+            class="guestbook-thank-deco"
+            src="./images/invitation_3.png"
+            alt=""
+            width="96"
+            height="96"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <p class="guestbook-thank-message" id="rsvp-thank-message"></p>
       </div>
     </div>
 
@@ -422,6 +644,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js" defer></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js" defer></script>
     <script src="./firebase-config.js" defer></script>
-    <script src="./script.js?v=20260520" defer></script>
+    <script src="./script.js?v=20260522-rsvp2" defer></script>
   </body>
 </html>
