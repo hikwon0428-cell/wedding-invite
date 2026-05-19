@@ -406,86 +406,6 @@
       </button>
     </div>
 
-    <div class="guestbook-modal" id="shuttle-modal" hidden aria-modal="true" role="dialog">
-      <div class="guestbook-modal-card">
-        <button class="guestbook-modal-close" id="shuttle-modal-close" type="button" aria-label="닫기">
-          ×
-        </button>
-        <h3 class="guestbook-modal-title">셔틀버스 이용 신청</h3>
-        <form class="shuttle-form" id="shuttle-form" novalidate>
-          <label class="shuttle-field" for="shuttle-name">
-            <span class="shuttle-label">이름</span>
-            <input id="shuttle-name" type="text" maxlength="12" placeholder="이름" required />
-          </label>
-          <label class="shuttle-field" for="shuttle-phone">
-            <span class="shuttle-label">휴대폰 번호</span>
-            <input
-              id="shuttle-phone"
-              type="tel"
-              inputmode="numeric"
-              maxlength="13"
-              placeholder="01012345678"
-              required
-            />
-          </label>
-          <fieldset class="shuttle-field shuttle-trip-field">
-            <legend class="shuttle-label">이용 구분</legend>
-            <div class="shuttle-trip-options">
-              <label class="shuttle-trip-option">
-                <input type="radio" name="shuttle-trip" value="round" checked />
-                <span>왕복</span>
-              </label>
-              <label class="shuttle-trip-option">
-                <input type="radio" name="shuttle-trip" value="oneway" />
-                <span>편도</span>
-              </label>
-            </div>
-          </fieldset>
-          <div class="shuttle-times-round" id="shuttle-times-round">
-            <label class="shuttle-field" for="shuttle-station-time">
-              <span class="shuttle-label">순천역 출발</span>
-              <select id="shuttle-station-time" required>
-                <option value="" disabled selected>시간을 선택해 주세요</option>
-                <option value="station-1140">11시 40분</option>
-                <option value="station-1250">12시 50분</option>
-              </select>
-            </label>
-            <label class="shuttle-field" for="shuttle-venue-time">
-              <span class="shuttle-label">더헤윰 웨딩홀 출발</span>
-              <select id="shuttle-venue-time" required>
-                <option value="" disabled selected>시간을 선택해 주세요</option>
-                <option value="venue-1400">14시</option>
-                <option value="venue-1500">15시</option>
-              </select>
-            </label>
-          </div>
-          <label class="shuttle-field shuttle-times-oneway" id="shuttle-times-oneway" for="shuttle-oneway-time" hidden>
-            <span class="shuttle-label">이용 시간</span>
-            <select id="shuttle-oneway-time">
-              <option value="" disabled selected>시간을 선택해 주세요</option>
-              <option value="station-1140">순천역(출발지) · 11시 40분</option>
-              <option value="station-1250">순천역(출발지) · 12시 50분</option>
-              <option value="venue-1400">더헤윰 웨딩홀(출발지) · 14시</option>
-              <option value="venue-1500">더헤윰 웨딩홀(출발지) · 15시</option>
-            </select>
-          </label>
-          <label class="shuttle-field" id="shuttle-pickup-field" for="shuttle-pickup">
-            <span class="shuttle-label">픽업/드롭 장소</span>
-            <select id="shuttle-pickup" required>
-              <option value="" disabled selected>장소를 선택해 주세요</option>
-              <option value="suncheon-station">순천역</option>
-              <option value="suncheon-terminal">순천터미널</option>
-            </select>
-          </label>
-          <button type="submit">신청하기</button>
-          <p class="shuttle-note">
-            웨딩홀에서 운영하는 셔틀이 아닌 신랑·신부가 개인적으로 마련한 차량으로, 이용 인원 및
-            상황에 따라 노선과 시간이 일부 조정될 수 있습니다.
-          </p>
-        </form>
-      </div>
-    </div>
-
     <div class="guestbook-modal" id="rsvp-modal" hidden aria-modal="true" role="dialog">
       <div class="guestbook-modal-card">
         <button class="guestbook-modal-close" id="rsvp-modal-close" type="button" aria-label="닫기">
@@ -536,9 +456,9 @@
             />
           </label>
           <label class="rsvp-field" id="rsvp-guest-count-field" for="rsvp-guest-count">
-            <span class="rsvp-field-label">동행 인원 <span class="rsvp-optional">(본인 제외)</span></span>
-            <select id="rsvp-guest-count">
-              <option value="" selected disabled>선택해 주세요</option>
+            <span class="rsvp-field-label">동행 인원 <span class="rsvp-optional">(본인 제외)</span> <em class="rsvp-required">(필수)</em></span>
+            <select id="rsvp-guest-count" class="rsvp-guest-count-select" required>
+              <option value="" disabled selected hidden>선택해 주세요</option>
               <option value="0">없음</option>
               <option value="1">1명</option>
               <option value="2">2명</option>
@@ -549,9 +469,86 @@
             </select>
           </label>
 
-          <div class="rsvp-shuttle-block">
-            <p class="rsvp-shuttle-help">셔틀버스를 이용하시는 분은 별도로 신청해 주세요.</p>
-            <button class="rsvp-shuttle-btn" id="rsvp-shuttle-open" type="button">셔틀버스 이용 신청</button>
+          <label class="rsvp-field" for="rsvp-note">
+            <span class="rsvp-field-label">비고</span>
+            <textarea
+              id="rsvp-note"
+              class="rsvp-note"
+              rows="1"
+              maxlength="200"
+              placeholder="참석 관련 요청 사항이나 전하실 말씀이 있다면 남겨주세요."
+            ></textarea>
+          </label>
+
+          <div id="rsvp-shuttle-wrap" class="rsvp-shuttle-wrap">
+            <label class="rsvp-shuttle-toggle" for="rsvp-shuttle-request">
+              <input type="checkbox" id="rsvp-shuttle-request" />
+              <span class="rsvp-shuttle-toggle-text">셔틀버스 이용 신청</span>
+            </label>
+
+            <div id="rsvp-shuttle-details" class="rsvp-shuttle-details shuttle-form" hidden>
+              <fieldset class="shuttle-field shuttle-trip-field">
+                <legend class="shuttle-label">이용 구분</legend>
+                <div class="shuttle-trip-options">
+                  <label class="shuttle-trip-option">
+                    <input type="radio" name="shuttle-trip" value="round" checked />
+                    <span>왕복</span>
+                  </label>
+                  <label class="shuttle-trip-option">
+                    <input type="radio" name="shuttle-trip" value="oneway" />
+                    <span>편도</span>
+                  </label>
+                </div>
+              </fieldset>
+              <label class="shuttle-field" id="shuttle-pickup-field" for="shuttle-pickup">
+                <span class="shuttle-label" id="shuttle-pickup-label">픽업 장소</span>
+                <select id="shuttle-pickup" class="rsvp-shuttle-select">
+                  <option value="" disabled selected hidden>장소를 선택해 주세요</option>
+                  <option value="suncheon-station">순천역</option>
+                  <option value="suncheon-terminal">순천터미널</option>
+                </select>
+              </label>
+              <div class="shuttle-times-round" id="shuttle-times-round">
+                <label class="shuttle-field" for="shuttle-station-time">
+                  <span class="shuttle-label">순천역 출발 시간</span>
+                  <select id="shuttle-station-time" class="rsvp-shuttle-select">
+                    <option value="" disabled selected hidden>시간을 선택해 주세요</option>
+                    <option value="station-1140">11시 40분</option>
+                    <option value="station-1250">12시 50분</option>
+                  </select>
+                </label>
+                <label class="shuttle-field" id="shuttle-drop-field" for="shuttle-drop">
+                  <span class="shuttle-label">드롭 장소</span>
+                  <select id="shuttle-drop" class="rsvp-shuttle-select">
+                    <option value="" disabled selected hidden>장소를 선택해 주세요</option>
+                    <option value="suncheon-station">순천역</option>
+                    <option value="suncheon-terminal">순천터미널</option>
+                  </select>
+                </label>
+                <label class="shuttle-field" for="shuttle-venue-time">
+                  <span class="shuttle-label">웨딩홀 출발 시간</span>
+                  <select id="shuttle-venue-time" class="rsvp-shuttle-select">
+                    <option value="" disabled selected hidden>시간을 선택해 주세요</option>
+                    <option value="venue-1400">14시</option>
+                    <option value="venue-1500">15시</option>
+                  </select>
+                </label>
+              </div>
+              <label class="shuttle-field shuttle-times-oneway" id="shuttle-times-oneway" for="shuttle-oneway-time" hidden>
+                <span class="shuttle-label">이용 시간</span>
+                <select id="shuttle-oneway-time" class="rsvp-shuttle-select">
+                  <option value="" disabled selected hidden>시간을 선택해 주세요</option>
+                  <option value="station-1140">순천역 · 11시 40분</option>
+                  <option value="station-1250">순천역 · 12시 50분</option>
+                  <option value="venue-1400">웨딩홀 · 14시</option>
+                  <option value="venue-1500">웨딩홀 · 15시</option>
+                </select>
+              </label>
+              <p class="shuttle-note">
+                웨딩홀에서 운영하는 셔틀이 아닌 신랑·신부가 개인적으로 마련한 차량으로, 이용 인원 및
+                상황에 따라 노선과 시간이 일부 조정될 수 있습니다.
+              </p>
+            </div>
           </div>
 
           <button class="rsvp-submit" type="submit">전달하기</button>
@@ -642,6 +639,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js" defer></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js" defer></script>
     <script src="./firebase-config.js" defer></script>
-    <script src="./script.js?v=20260522-rsvp2" defer></script>
+    <script src="./script.js?v=20260522-rsvp3" defer></script>
   </body>
 </html>

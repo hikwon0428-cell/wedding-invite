@@ -1494,7 +1494,8 @@ button,
 }
 
 .rsvp-form input,
-.rsvp-form select {
+.rsvp-form select,
+.rsvp-form textarea {
   width: 100%;
   border: 1px solid #d8d8d8;
   border-radius: 8px;
@@ -1503,6 +1504,23 @@ button,
   font-size: 14px;
   color: #111111;
   background: #ffffff;
+}
+
+.rsvp-form textarea {
+  resize: none;
+  line-height: 1.5;
+  overflow: hidden;
+  field-sizing: content;
+}
+
+.rsvp-form textarea.rsvp-note {
+  min-height: calc(1.5em + 24px);
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.rsvp-form textarea::placeholder {
+  color: #aaaaaa;
 }
 
 .rsvp-form select {
@@ -1514,34 +1532,53 @@ button,
   background-repeat: no-repeat;
 }
 
-.rsvp-field[hidden] {
+.rsvp-guest-count-select:required:invalid,
+.rsvp-shuttle-select:required:invalid {
+  color: #aaaaaa;
+}
+
+.rsvp-guest-count-select option,
+.rsvp-shuttle-select option {
+  color: #111111;
+}
+
+.rsvp-field[hidden],
+.rsvp-shuttle-wrap[hidden],
+.rsvp-shuttle-details[hidden] {
   display: none;
 }
 
-.rsvp-shuttle-block {
+.rsvp-shuttle-wrap {
   display: grid;
-  gap: 8px;
+  gap: 10px;
+}
+
+.rsvp-shuttle-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  cursor: pointer;
+  font-family: var(--font-ko);
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
+}
+
+.rsvp-shuttle-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #111111;
+}
+
+.rsvp-shuttle-details {
+  display: grid;
+  gap: 10px;
   padding-top: 4px;
 }
 
-.rsvp-shuttle-help {
-  margin: 0;
-  font-family: var(--font-ko);
-  font-size: 12px;
-  line-height: 1.5;
-  color: #666666;
-}
-
-.rsvp-shuttle-btn {
-  width: 100%;
-  border: 1px solid #111111;
-  border-radius: 8px;
-  padding: 12px;
-  background: #ffffff;
-  color: #111111;
-  font-family: var(--font-ko);
-  font-size: 14px;
-  font-weight: 400;
+.rsvp-shuttle-details.shuttle-form {
+  gap: 10px;
 }
 
 .rsvp-submit {
@@ -1560,9 +1597,6 @@ button,
   z-index: 110;
 }
 
-#shuttle-modal.is-stacked {
-  z-index: 120;
-}
 
 .guestbook-form {
   display: grid;
@@ -1720,6 +1754,11 @@ body.guestbook-modal-open,
 body.guestbook-thank-open,
 body.rsvp-modal-open {
   overflow: hidden;
+}
+
+.rsvp-shuttle-details.shuttle-form input,
+.rsvp-shuttle-details.shuttle-form select {
+  width: 100%;
 }
 
 #rsvp-thank-modal {

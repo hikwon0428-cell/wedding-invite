@@ -43,6 +43,11 @@ const SHUTTLE_PICKUP_LABELS = {
   venue: "더헤윰",
 };
 
+const SHUTTLE_DROP_LABELS = {
+  "suncheon-station": "순천역",
+  "suncheon-terminal": "순천터미널",
+};
+
 const SHUTTLE_VENUE_DEPARTURES = new Set(["venue-1400", "venue-1500"]);
 
 const RSVP_SIDE_LABELS = {
@@ -506,11 +511,8 @@ function getSelectLabel(select) {
   return select.options[select.selectedIndex]?.text || "";
 }
 
-function initShuttle() {
-  const form = document.getElementById("shuttle-form");
-  const nameInput = document.getElementById("shuttle-name");
-  const phoneInput = document.getElementById("shuttle-phone");
-  const tripInputs = Array.from(form?.querySelectorAll('input[name="shuttle-trip"]') || []);
+function createInlineShuttleController() {
+  const tripInputs = Array.from(document.querySelectorAll('#rsvp-shuttle-details input[name="shuttle-trip"]'));
   const roundTimes = document.getElementById("shuttle-times-round");
   const stationTimeSelect = document.getElementById("shuttle-station-time");
   const venueTimeSelect = document.getElementById("shuttle-venue-time");
@@ -518,13 +520,11 @@ function initShuttle() {
   const onewayTimeSelect = document.getElementById("shuttle-oneway-time");
   const pickupSelect = document.getElementById("shuttle-pickup");
   const pickupField = document.getElementById("shuttle-pickup-field");
-  const fab = document.getElementById("shuttle-fab");
-  const modal = document.getElementById("shuttle-modal");
-  const modalClose = document.getElementById("shuttle-modal-close");
+  const pickupLabelEl = document.getElementById("shuttle-pickup-label");
+  const dropSelect = document.getElementById("shuttle-drop");
+  const dropField = document.getElementById("shuttle-drop-field");
+
   if (
-    !form ||
-    !nameInput ||
-    !phoneInput ||
     tripInputs.length === 0 ||
     !roundTimes ||
     !stationTimeSelect ||
@@ -533,54 +533,49 @@ function initShuttle() {
     !onewayTimeSelect ||
     !pickupSelect ||
     !pickupField ||
-    !modal ||
-    !modalClose
+    !dropSelect ||
+    !dropField
   ) {
-    return;
+    return null;
   }
 
-  const remoteCollection = getFirestoreCollection("shuttleReservations");
-  const storageKey = "wedding_shuttle_reservations_v1";
+  let shuttleRequired = false;
 
   function getTripType() {
-    return form.querySelector('input[name="shuttle-trip"]:checked')?.value || "round";
+    const checked = document.querySelector('#rsvp-shuttle-details input[name="shuttle-trip"]:checked');
+    return checked?.value || "round";
   }
 
   function isRoundTrip() {
     return getTripType() === "round";
   }
 
-  function openModal(prefill) {
-    if (prefill?.name) {
-      nameInput.value = String(prefill.name).slice(0, 12);
-    }
-    if (prefill?.phone) {
-      const digits = normalizePhoneNumber(prefill.phone);
-      phoneInput.value = digits ? formatPhoneNumber(digits) : String(prefill.phone);
-    }
-
-    modal.hidden = false;
-    document.body.classList.add("shuttle-modal-open");
-    nameInput.focus();
+  function updatePickupLabel() {
+    if (!pickupLabelEl) return;
+    pickupLabelEl.textContent = isRoundTrip() ? "픽업 장소" : "픽업/드롭 장소";
   }
-
-  function closeModal() {
-    modal.hidden = true;
-    modal.classList.remove("is-stacked");
-    document.body.classList.remove("shuttle-modal-open");
-  }
-
-  window.weddingOpenShuttleModal = (prefill) => {
-    modal.classList.add("is-stacked");
-    openModal(prefill);
-  };
 
   function updatePickupField() {
+    updatePickupLabel();
+
+    if (!shuttleRequired) {
+      pickupField.hidden = false;
+      pickupSelect.required = false;
+      dropField.hidden = false;
+      dropSelect.required = false;
+      return;
+    }
+
     if (isRoundTrip()) {
       pickupField.hidden = false;
       pickupSelect.required = true;
+      dropField.hidden = false;
+      dropSelect.required = true;
       return;
     }
+
+    dropField.hidden = true;
+    dropSelect.required = false;
 
     const scheduleId = onewayTimeSelect.value;
     const isVenueDeparture = SHUTTLE_VENUE_DEPARTURES.has(scheduleId);
@@ -595,18 +590,25 @@ function initShuttle() {
     const round = isRoundTrip();
     roundTimes.hidden = !round;
     onewayTimes.hidden = round;
-    stationTimeSelect.required = round;
-    venueTimeSelect.required = round;
-    onewayTimeSelect.required = !round;
+    stationTimeSelect.required = shuttleRequired && round;
+    venueTimeSelect.required = shuttleRequired && round;
+    dropSelect.required = shuttleRequired && round;
+    onewayTimeSelect.required = shuttleRequired && !round;
 
     if (round) {
       onewayTimeSelect.value = "";
     } else {
       stationTimeSelect.value = "";
       venueTimeSelect.value = "";
+      dropSelect.value = "";
     }
 
     updatePickupField();
+  }
+
+  function setShuttleRequired(required) {
+    shuttleRequired = required;
+    updateTripTypeUI();
   }
 
   function buildSchedulePayload() {
@@ -619,12 +621,19 @@ function initShuttle() {
 
       const stationLabel = getSelectLabel(stationTimeSelect);
       const venueLabel = getSelectLabel(venueTimeSelect);
+      const dropId = dropSelect.value;
+      const dropLabel = SHUTTLE_DROP_LABELS[dropId] || "";
+      if (!dropId) {
+        return null;
+      }
       return {
         tripType: "round",
         scheduleId: `${stationId},${venueId}`,
         scheduleStationId: stationId,
         scheduleVenueId: venueId,
-        scheduleLabel: `왕복 · ${stationLabel} / ${venueLabel}`,
+        scheduleLabel: `왕복 · ${stationLabel} / ${dropLabel} · ${venueLabel}`,
+        dropId,
+        dropLabel,
         needsPickup: true,
       };
     }
@@ -645,18 +654,16 @@ function initShuttle() {
     };
   }
 
-  if (fab) {
-    fab.addEventListener("click", () => openModal());
+  function resetShuttleFields() {
+    const roundInput = document.querySelector('#rsvp-shuttle-details input[name="shuttle-trip"][value="round"]');
+    if (roundInput) roundInput.checked = true;
+    stationTimeSelect.value = "";
+    venueTimeSelect.value = "";
+    onewayTimeSelect.value = "";
+    pickupSelect.value = "";
+    dropSelect.value = "";
+    setShuttleRequired(false);
   }
-  modalClose.addEventListener("click", closeModal);
-  modal.addEventListener("click", (event) => {
-    if (event.target === modal) closeModal();
-  });
-
-  window.addEventListener("keydown", (event) => {
-    if (modal.hidden) return;
-    if (event.key === "Escape") closeModal();
-  });
 
   tripInputs.forEach((input) => {
     input.addEventListener("change", updateTripTypeUI);
@@ -665,27 +672,41 @@ function initShuttle() {
   onewayTimeSelect.addEventListener("change", updatePickupField);
   updateTripTypeUI();
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  return {
+    buildSchedulePayload,
+    resetShuttleFields,
+    setShuttleRequired,
+    updateTripTypeUI,
+  };
+}
 
-    const name = nameInput.value.trim().slice(0, 12);
-    const phoneDigits = normalizePhoneNumber(phoneInput.value);
-    const schedule = buildSchedulePayload();
+async function submitShuttleReservation(name, phoneDigits) {
+  const shuttle = createInlineShuttleController();
+  if (!shuttle) {
+    showToast("셔틀 신청 정보를 확인할 수 없습니다.");
+    return false;
+  }
 
-    if (!name || !phoneDigits || !schedule) {
-      showToast("입력 정보를 확인해 주세요.");
-      return;
-    }
+  const schedule = shuttle.buildSchedulePayload();
+  if (!schedule) {
+    showToast("셔틀 이용 정보를 확인해 주세요.");
+    return false;
+  }
 
     let pickupId = "venue";
     let pickupLabel = SHUTTLE_PICKUP_LABELS.venue;
+    let dropId = schedule.dropId || "";
+    let dropLabel = schedule.dropLabel || "";
 
+    const pickupSelectEl = document.getElementById("shuttle-pickup");
     if (schedule.needsPickup) {
-      pickupId = pickupSelect.value;
+      pickupId = pickupSelectEl?.value || "";
       pickupLabel = SHUTTLE_PICKUP_LABELS[pickupId] || "";
       if (!pickupId) {
-        showToast("픽업 장소를 선택해 주세요.");
-        return;
+        showToast(
+          schedule.tripType === "round" ? "픽업 장소를 선택해 주세요." : "픽업/드롭 장소를 선택해 주세요."
+        );
+        return false;
       }
     }
 
@@ -700,27 +721,34 @@ function initShuttle() {
       scheduleLabel: schedule.scheduleLabel,
       pickupId,
       pickupLabel,
+      dropId,
+      dropLabel,
       createdAt: new Date().toISOString(),
     };
 
-    if (remoteCollection) {
-      try {
-        await remoteCollection.add({
-          name: entry.name,
-          phone: entry.phone,
-          phoneDisplay: entry.phoneDisplay,
-          tripType: entry.tripType,
-          scheduleId: entry.scheduleId,
-          scheduleStationId: entry.scheduleStationId,
-          scheduleVenueId: entry.scheduleVenueId,
-          scheduleLabel: entry.scheduleLabel,
+  const remoteCollection = getFirestoreCollection("shuttleReservations");
+  const storageKey = "wedding_shuttle_reservations_v1";
+
+  if (remoteCollection) {
+    try {
+      await remoteCollection.add({
+        name: entry.name,
+        phone: entry.phone,
+        phoneDisplay: entry.phoneDisplay,
+        tripType: entry.tripType,
+        scheduleId: entry.scheduleId,
+        scheduleStationId: entry.scheduleStationId,
+        scheduleVenueId: entry.scheduleVenueId,
+        scheduleLabel: entry.scheduleLabel,
           pickupId: entry.pickupId,
           pickupLabel: entry.pickupLabel,
+          dropId: entry.dropId,
+          dropLabel: entry.dropLabel,
           createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
         });
       } catch (_error) {
-        showToast("신청에 실패했습니다.");
-        return;
+        showToast("셔틀 신청에 실패했습니다.");
+        return false;
       }
     } else {
       try {
@@ -730,18 +758,12 @@ function initShuttle() {
         nextEntries.unshift(entry);
         localStorage.setItem(storageKey, JSON.stringify(nextEntries.slice(0, 100)));
       } catch (_error) {
-        showToast("신청에 실패했습니다.");
-        return;
+        showToast("셔틀 신청에 실패했습니다.");
+        return false;
       }
     }
 
-    form.reset();
-    const roundInput = form.querySelector('input[name="shuttle-trip"][value="round"]');
-    if (roundInput) roundInput.checked = true;
-    updateTripTypeUI();
-    closeModal();
-    showToast("신청되었습니다.", { center: true });
-  });
+    return true;
 }
 
 function initRsvp() {
@@ -752,7 +774,11 @@ function initRsvp() {
   const attendanceInputs = Array.from(form?.querySelectorAll('input[name="rsvp-attendance"]') || []);
   const guestCountField = document.getElementById("rsvp-guest-count-field");
   const guestCountSelect = document.getElementById("rsvp-guest-count");
-  const shuttleOpenBtn = document.getElementById("rsvp-shuttle-open");
+  const noteInput = document.getElementById("rsvp-note");
+  const shuttleWrap = document.getElementById("rsvp-shuttle-wrap");
+  const shuttleRequest = document.getElementById("rsvp-shuttle-request");
+  const shuttleDetails = document.getElementById("rsvp-shuttle-details");
+  const shuttleController = createInlineShuttleController();
   const fab = document.getElementById("rsvp-fab");
   const modal = document.getElementById("rsvp-modal");
   const modalClose = document.getElementById("rsvp-modal-close");
@@ -767,7 +793,11 @@ function initRsvp() {
     attendanceInputs.length === 0 ||
     !guestCountField ||
     !guestCountSelect ||
-    !shuttleOpenBtn ||
+    !noteInput ||
+    !shuttleWrap ||
+    !shuttleRequest ||
+    !shuttleDetails ||
+    !shuttleController ||
     !fab ||
     !modal ||
     !modalClose ||
@@ -797,18 +827,33 @@ function initRsvp() {
     guestCountSelect.value = "";
   }
 
-  function updateGuestCountField() {
+  function resizeNoteField() {
+    noteInput.style.height = "auto";
+    noteInput.style.height = `${noteInput.scrollHeight}px`;
+  }
+
+  function updateShuttleVisibility() {
+    const checked = shuttleRequest.checked;
+    shuttleDetails.hidden = !checked;
+    shuttleController.setShuttleRequired(checked);
+  }
+
+  function updateAttendanceFields() {
     const attending = isAttending();
     guestCountField.hidden = !attending;
-    guestCountSelect.required = false;
+    guestCountSelect.required = attending;
+    shuttleWrap.hidden = !attending;
     if (!attending) {
       resetGuestCountSelect();
+      shuttleRequest.checked = false;
+      updateShuttleVisibility();
     }
   }
 
   function openModal() {
     modal.hidden = false;
     document.body.classList.add("rsvp-modal-open");
+    resizeNoteField();
     nameInput.focus();
   }
 
@@ -836,17 +881,8 @@ function initRsvp() {
     if (event.target === modal) closeModal();
   });
 
-  shuttleOpenBtn.addEventListener("click", () => {
-    if (typeof window.weddingOpenShuttleModal !== "function") {
-      showToast("셔틀 신청 창을 열 수 없습니다.");
-      return;
-    }
-
-    window.weddingOpenShuttleModal({
-      name: nameInput.value.trim(),
-      phone: phoneInput.value.trim(),
-    });
-  });
+  shuttleRequest.addEventListener("change", updateShuttleVisibility);
+  noteInput.addEventListener("input", resizeNoteField);
 
   thankClose.addEventListener("click", closeThankModal);
   thankModal.addEventListener("click", (event) => {
@@ -860,15 +896,14 @@ function initRsvp() {
       return;
     }
     if (modal.hidden) return;
-    const shuttleModal = document.getElementById("shuttle-modal");
-    if (shuttleModal && !shuttleModal.hidden) return;
     closeModal();
   });
 
   attendanceInputs.forEach((input) => {
-    input.addEventListener("change", updateGuestCountField);
+    input.addEventListener("change", updateAttendanceFields);
   });
-  updateGuestCountField();
+  updateAttendanceFields();
+  updateShuttleVisibility();
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -879,24 +914,35 @@ function initRsvp() {
     const sideLabel = RSVP_SIDE_LABELS[side] || "";
     const attendance = getAttendance();
     const attendanceLabel = RSVP_ATTENDANCE_LABELS[attendance] || "";
-    const guestCountRaw = isAttending() ? guestCountSelect.value : "";
-    const guestCount = guestCountRaw === "" ? null : Number(guestCountRaw);
-    const guestCountLabel =
-      guestCount === null
-        ? ""
-        : guestCount === 0
-          ? "없음"
-          : `${guestCount}명`;
+    const guestCount = isAttending()
+      ? guestCountSelect.value === ""
+        ? null
+        : Number(guestCountSelect.value)
+      : 0;
+    const guestCountLabel = isAttending()
+      ? guestCount === 0
+        ? "없음"
+        : guestCount === null
+          ? ""
+          : `${guestCount}명`
+      : "";
 
     if (!name || !phoneDigits || !sideLabel || !attendanceLabel) {
       showToast("입력 정보를 확인해 주세요.");
       return;
     }
 
-    if (guestCount !== null && (!Number.isFinite(guestCount) || guestCount < 0)) {
+    if (isAttending() && guestCount === null) {
+      showToast("동행 인원을 선택해 주세요.");
+      return;
+    }
+
+    if (isAttending() && (!Number.isFinite(guestCount) || guestCount < 0)) {
       showToast("동행 인원을 확인해 주세요.");
       return;
     }
+
+    const note = noteInput.value.trim().slice(0, 200);
 
     const entry = {
       name,
@@ -908,8 +954,11 @@ function initRsvp() {
       attendanceLabel,
       guestCount,
       guestCountLabel,
+      note,
       createdAt: new Date().toISOString(),
     };
+
+    const wantsShuttle = isAttending() && shuttleRequest.checked;
 
     if (remoteCollection) {
       try {
@@ -923,6 +972,8 @@ function initRsvp() {
           attendanceLabel: entry.attendanceLabel,
           guestCount: entry.guestCount,
           guestCountLabel: entry.guestCountLabel,
+          note: entry.note,
+          shuttleRequested: wantsShuttle,
           createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
         });
       } catch (_error) {
@@ -934,10 +985,17 @@ function initRsvp() {
         const raw = localStorage.getItem(storageKey);
         const entries = raw ? JSON.parse(raw) : [];
         const nextEntries = Array.isArray(entries) ? entries : [];
-        nextEntries.unshift(entry);
+        nextEntries.unshift({ ...entry, shuttleRequested: wantsShuttle });
         localStorage.setItem(storageKey, JSON.stringify(nextEntries.slice(0, 100)));
       } catch (_error) {
         showToast("전달에 실패했습니다.");
+        return;
+      }
+    }
+
+    if (wantsShuttle) {
+      const shuttleSaved = await submitShuttleReservation(name, phoneDigits);
+      if (!shuttleSaved) {
         return;
       }
     }
@@ -949,7 +1007,11 @@ function initRsvp() {
       input.checked = false;
     });
     resetGuestCountSelect();
-    updateGuestCountField();
+    resizeNoteField();
+    shuttleController.resetShuttleFields();
+    shuttleRequest.checked = false;
+    updateShuttleVisibility();
+    updateAttendanceFields();
     const submittedAttendance = attendance;
     closeModal();
     openThankModal(submittedAttendance);
@@ -1207,7 +1269,7 @@ function initSmoothWheelScroll() {
       if (!(el instanceof Element)) return;
       if (
         el.closest(
-          "input, textarea, select, [contenteditable='true'], #naver-map, .gallery-modal, .guestbook-modal, .guestbook-thank-modal, #rsvp-thank-modal, #shuttle-modal, #rsvp-modal"
+          "input, textarea, select, [contenteditable='true'], #naver-map, .gallery-modal, .guestbook-modal, .guestbook-thank-modal, #rsvp-thank-modal, #rsvp-modal"
         )
       ) {
         return;
@@ -1286,7 +1348,6 @@ window.addEventListener("load", initNaverMap);
 window.addEventListener("load", initIntroSequence);
 window.addEventListener("load", initHeroFixedBackground);
 window.addEventListener("load", initGallery);
-window.addEventListener("load", initShuttle);
 window.addEventListener("load", initRsvp);
 window.addEventListener("load", initGuestbook);
 window.addEventListener("load", initSmoothWheelScroll);
