@@ -1,7 +1,7 @@
 const targetDate = new Date("2026-08-22T13:00:00+09:00");
 // 같은 파일명으로 사진만 교체했을 때 강력 새로고침 없이 반영되도록 버전을 올립니다.
 const ASSET_VERSION = "20260521";
-const JPEG_IMAGE_NUMBERS = new Set([2, 3, 6, 9, 15, 17, 18, 19, 20, 21, 25]);
+const JPEG_IMAGE_NUMBERS = new Set([2, 3, 6, 9, 11, 15, 17, 18, 19, 20, 21, 25]);
 
 function assetUrl(path) {
   const separator = path.includes("?") ? "&" : "?";
