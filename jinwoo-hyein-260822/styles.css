@@ -209,7 +209,7 @@ body.intro-lock {
   margin-right: -24px;
   padding-left: 24px;
   padding-right: 24px;
-  padding-top: 264px;
+  padding-top: 198px;
   padding-bottom: 28px;
 }
 
@@ -643,7 +643,7 @@ h2 {
 
 .countdown-wrap .countdown-thumbs {
   margin-top: 3.6em;
-  margin-bottom: 320px;
+  margin-bottom: 240px;
 }
 
 .section.gallery {
@@ -668,13 +668,13 @@ h2 {
   margin-top: 0;
   background: #ffffff;
   padding-top: 400px;
-  padding-bottom: 240px;
+  padding-bottom: 192px;
 }
 
 .section.contact {
   margin-top: 0;
   background: #ffffff;
-  padding-top: 400px;
+  padding-top: 320px;
   padding-bottom: 0;
 }
 
