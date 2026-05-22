@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 방명록
+    match /guestbookEntries/{docId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 12
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 120;
+      allow read, update, delete: if false;
+    }
+
+    // RSVP (참석 의사)
+    match /rsvpResponses/{docId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 12
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 10
+        && request.resource.data.side in ['groom', 'bride']
+        && request.resource.data.attendance in ['attending', 'not_attending']
+        && request.resource.data.guestCount is number
+        && request.resource.data.guestCount >= 0
+        && request.resource.data.guestCount <= 6
+        && request.resource.data.shuttleRequested is bool;
+      allow read, update, delete: if false;
+    }
+
+    // 셔틀버스 (RSVP에서 신청 시)
+    match /shuttleReservations/{docId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 12
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 10
+        && request.resource.data.tripType in ['round', 'oneway'];
+      allow read, update, delete: if false;
+    }
+  }
+}

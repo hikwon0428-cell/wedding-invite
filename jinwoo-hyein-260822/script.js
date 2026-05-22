@@ -746,8 +746,9 @@ async function submitShuttleReservation(name, phoneDigits) {
           dropLabel: entry.dropLabel,
           createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
         });
-      } catch (_error) {
-        showToast("셔틀 신청에 실패했습니다.");
+      } catch (error) {
+        console.error("Shuttle save failed:", error);
+        showToast("셔틀 신청에 실패했습니다. (Firebase 규칙 확인)");
         return false;
       }
     } else {
@@ -757,7 +758,8 @@ async function submitShuttleReservation(name, phoneDigits) {
         const nextEntries = Array.isArray(entries) ? entries : [];
         nextEntries.unshift(entry);
         localStorage.setItem(storageKey, JSON.stringify(nextEntries.slice(0, 100)));
-      } catch (_error) {
+      } catch (error) {
+        console.error("Shuttle local save failed:", error);
         showToast("셔틀 신청에 실패했습니다.");
         return false;
       }
@@ -976,8 +978,9 @@ function initRsvp() {
           shuttleRequested: wantsShuttle,
           createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
         });
-      } catch (_error) {
-        showToast("전달에 실패했습니다.");
+      } catch (error) {
+        console.error("RSVP save failed:", error);
+        showToast("전달에 실패했습니다. (Firebase 규칙 확인)");
         return;
       }
     } else {
@@ -987,7 +990,8 @@ function initRsvp() {
         const nextEntries = Array.isArray(entries) ? entries : [];
         nextEntries.unshift({ ...entry, shuttleRequested: wantsShuttle });
         localStorage.setItem(storageKey, JSON.stringify(nextEntries.slice(0, 100)));
-      } catch (_error) {
+      } catch (error) {
+        console.error("RSVP local save failed:", error);
         showToast("전달에 실패했습니다.");
         return;
       }
