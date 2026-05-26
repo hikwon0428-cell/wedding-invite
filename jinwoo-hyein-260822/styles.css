@@ -419,7 +419,8 @@ h2 {
 }
 
 .invite-family {
-  margin: 22px 0 0;
+  /* 인사말(line-height:2) 기준 줄 2개 추가 */
+  margin: calc(22px + 4 * (13px + 3pt)) 0 calc(4 * (13px + 3pt));
 }
 
 .invite-family__row {
@@ -442,7 +443,7 @@ h2 {
 }
 
 .invite-family__parents {
-  font-size: calc(11px + 4pt);
+  font-size: calc(11px + 5pt);
   letter-spacing: 0.01em;
 }
 
@@ -1141,7 +1142,7 @@ body.gallery-modal-open {
 }
 
 .account-help {
-  margin: 0 0 14px;
+  margin: 0 0 calc(14px + 1.55 * (13px + 3pt));
 }
 
 .account-card + .account-card {
@@ -1928,7 +1929,7 @@ body.rsvp-modal-open {
 
 @media (max-width: 460px) {
   .contact h2 {
-    font-size: 21px;
+    font-size: calc(21px + 2pt);
   }
 }
 
@@ -2001,11 +2002,15 @@ body.rsvp-modal-open {
   transform: translateX(-50%) translateY(10px);
   background: #111111;
   color: #ffffff;
-  padding: 10px 14px;
+  padding: 12px 26px;
   border-radius: 999px;
   font-size: calc(13px + 3pt);
   font-weight: 300;
   letter-spacing: 0.02em;
+  white-space: nowrap;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  text-align: center;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.24s ease, transform 0.24s ease;
@@ -2044,7 +2049,10 @@ body.rsvp-modal-open {
     font-size: calc(10px + 4pt);
   }
 
-  .invite-family__parents,
+  .invite-family__parents {
+    font-size: calc(9px + 5pt);
+  }
+
   .invite-family__suffix {
     font-size: calc(9px + 4pt);
   }
