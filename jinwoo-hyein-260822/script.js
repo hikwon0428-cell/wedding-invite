@@ -1182,18 +1182,26 @@ function initGuestbook() {
     remoteCollection
       .orderBy("createdAt", "desc")
       .limit(50)
-      .onSnapshot((snapshot) => {
-        const remoteEntries = snapshot.docs.map((doc) => {
-          const data = doc.data() || {};
-          const timestamp = data.createdAt?.toDate?.();
-          return {
-            name: String(data.name || "").slice(0, 12),
-            message: String(data.message || "").slice(0, 120),
-            createdAt: timestamp ? timestamp.toISOString() : new Date().toISOString(),
-          };
-        });
-        applyEntries(remoteEntries);
-      });
+      .onSnapshot(
+        (snapshot) => {
+          const remoteEntries = snapshot.docs.map((doc) => {
+            const data = doc.data() || {};
+            const timestamp = data.createdAt?.toDate?.();
+            return {
+              name: String(data.name || "").slice(0, 12),
+              message: String(data.message || "").slice(0, 120),
+              createdAt: timestamp ? timestamp.toISOString() : new Date().toISOString(),
+            };
+          });
+          applyEntries(remoteEntries);
+          saveEntries(remoteEntries);
+        },
+        (error) => {
+          console.error("Guestbook listen failed:", error);
+          entries = readEntries();
+          render(entries);
+        }
+      );
   }
 
   form.addEventListener("submit", async (event) => {
@@ -1231,6 +1239,48 @@ function initGuestbook() {
     closeModal();
     openThankModal();
   });
+}
+
+function initPreventPageZoom() {
+  let lastTouchEnd = 0;
+
+  document.addEventListener(
+    "touchend",
+    (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    },
+    { passive: false }
+  );
+
+  document.addEventListener(
+    "touchmove",
+    (event) => {
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    },
+    { passive: false }
+  );
+
+  ["gesturestart", "gesturechange", "gestureend"].forEach((type) => {
+    document.addEventListener(type, (event) => {
+      event.preventDefault();
+    });
+  });
+
+  window.addEventListener(
+    "wheel",
+    (event) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+      }
+    },
+    { passive: false }
+  );
 }
 
 function initSmoothWheelScroll() {
@@ -1354,6 +1404,7 @@ window.addEventListener("load", initHeroFixedBackground);
 window.addEventListener("load", initGallery);
 window.addEventListener("load", initRsvp);
 window.addEventListener("load", initGuestbook);
+window.addEventListener("load", initPreventPageZoom);
 window.addEventListener("load", initSmoothWheelScroll);
 window.addEventListener("load", initKakaoShareButton);
 
