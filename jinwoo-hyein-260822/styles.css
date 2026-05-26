@@ -537,18 +537,19 @@ h2 {
 .wedding-cal__weekdays {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 2px;
+  gap: 3px;
   margin-bottom: 13px;
 }
 
 .wedding-cal__weekdays span {
   font-family: var(--font-en);
-  font-size: calc(13px + 3pt);
+  font-size: calc(13px + 2pt);
   font-weight: 300;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   text-align: center;
   text-transform: uppercase;
   color: var(--muted);
+  min-width: 0;
 }
 
 .wedding-cal__grid {
