@@ -1912,7 +1912,7 @@ body.rsvp-modal-open {
   padding: 1.5rem 24px 2rem;
   text-align: center;
   font-family: var(--font-en);
-  font-size: calc(10px + 6pt);
+  font-size: calc(10px + 3pt);
   font-weight: 400;
   line-height: 1.6;
   letter-spacing: 0.04em;
