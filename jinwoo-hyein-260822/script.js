@@ -1318,6 +1318,13 @@ function initSmoothWheelScroll() {
   window.addEventListener(
     "wheel",
     (event) => {
+      if (document.body.classList.contains("intro-lock")) {
+        event.preventDefault();
+        currentY = window.scrollY;
+        targetY = window.scrollY;
+        return;
+      }
+
       // Let native scrolling work in text inputs / map / modals.
       const el = event.target;
       if (!(el instanceof Element)) return;
