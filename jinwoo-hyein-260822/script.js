@@ -838,6 +838,10 @@ function initRsvp() {
     const checked = shuttleRequest.checked;
     shuttleDetails.hidden = !checked;
     shuttleController.setShuttleRequired(checked);
+    phoneInput.required = checked;
+    if (!checked) {
+      phoneInput.value = "";
+    }
   }
 
   function updateAttendanceFields() {
@@ -929,8 +933,15 @@ function initRsvp() {
           : `${guestCount}명`
       : "";
 
-    if (!name || !phoneDigits || !sideLabel || !attendanceLabel) {
+    const wantsShuttle = isAttending() && shuttleRequest.checked;
+
+    if (!name || !sideLabel || !attendanceLabel) {
       showToast("입력 정보를 확인해 주세요.");
+      return;
+    }
+
+    if (wantsShuttle && !phoneDigits) {
+      showToast("대표 연락처를 입력해 주세요.");
       return;
     }
 
@@ -948,8 +959,8 @@ function initRsvp() {
 
     const entry = {
       name,
-      phone: phoneDigits,
-      phoneDisplay: formatPhoneNumber(phoneDigits),
+      phone: wantsShuttle ? phoneDigits : "",
+      phoneDisplay: wantsShuttle ? formatPhoneNumber(phoneDigits) : "",
       side,
       sideLabel,
       attendance,
@@ -959,8 +970,6 @@ function initRsvp() {
       note,
       createdAt: new Date().toISOString(),
     };
-
-    const wantsShuttle = isAttending() && shuttleRequest.checked;
 
     if (remoteCollection) {
       try {

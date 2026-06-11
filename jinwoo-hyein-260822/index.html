@@ -445,17 +445,6 @@
             <span class="rsvp-field-label">성함 <em class="rsvp-required">(필수)</em></span>
             <input id="rsvp-name" type="text" maxlength="12" placeholder="성함을 입력해 주세요" required />
           </label>
-          <label class="rsvp-field" for="rsvp-phone">
-            <span class="rsvp-field-label">대표 연락처 <em class="rsvp-required">(필수)</em></span>
-            <input
-              id="rsvp-phone"
-              type="tel"
-              inputmode="numeric"
-              maxlength="13"
-              placeholder="01012345678"
-              required
-            />
-          </label>
           <label class="rsvp-field" id="rsvp-guest-count-field" for="rsvp-guest-count">
             <span class="rsvp-field-label">동행 인원 <span class="rsvp-optional">(본인 제외)</span> <em class="rsvp-required">(필수)</em></span>
             <select id="rsvp-guest-count" class="rsvp-guest-count-select" required>
@@ -488,6 +477,16 @@
             </label>
 
             <div id="rsvp-shuttle-details" class="rsvp-shuttle-details shuttle-form" hidden>
+              <label class="rsvp-field rsvp-shuttle-phone" for="rsvp-phone">
+                <span class="rsvp-field-label">대표 연락처 <em class="rsvp-required">(필수)</em></span>
+                <input
+                  id="rsvp-phone"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="13"
+                  placeholder="01012345678"
+                />
+              </label>
               <fieldset class="shuttle-field shuttle-trip-field">
                 <legend class="shuttle-label">이용 구분</legend>
                 <div class="shuttle-trip-options">
@@ -640,6 +639,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js" defer></script>
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js" defer></script>
     <script src="./firebase-config.js" defer></script>
-    <script src="./script.js?v=20260522-intro-lock-wheel" defer></script>
+    <script src="./script.js?v=20260528-rsvp-phone" defer></script>
   </body>
 </html>
